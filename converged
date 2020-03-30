@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+"""
+VASP convergence test
+
+Author: Uthpala Herath
+
+This script uses pymatgen to read the vasp.xml file 
+in a directory to check if the DFT calculation 
+has reached electronic and/or ionic convergence. 
+
+Place the script somewhere that is accessed globally.
+
+Usage: 
+
+$ converged
+
+"""
+
+
+import warnings
+
+import pymatgen.io.vasp as vasp
+
+warnings.filterwarnings("ignore")
+vasprun = vasp.Vasprun("vasprun.xml")
+
+print("\nElectronic convergence:%s " % (vasprun.converged_electronic))
+print("Ionic convergence:%s " % (vasprun.converged_ionic))
