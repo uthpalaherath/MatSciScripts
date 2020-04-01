@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
-"""DOS Plotter
+""" DOS Plotter.
 
-This script plots Partial DOS from VASP outputs.
+This script plots Partial DOS from VASP DFT calculations.
 
 Author: Uthpala Herath
+
+Usage:
+    $ plotDOS.py -h
+
+    This will bring a list of options.
 
 """
 
