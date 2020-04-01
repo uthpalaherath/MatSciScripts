@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
-"""DOS Plotter.
+"""DOS Plotter
 
 This script plots Partial DOS from VASP outputs.
-It uses pymatgen libraries (https://github.com/materialsproject/pymatgen).
 
 Author: Uthpala Herath
 
-Usage:
-    plotDOS.py {total, atomic, orbital, orbital_d}
-
 """
+
 
 import argparse
 import collections
