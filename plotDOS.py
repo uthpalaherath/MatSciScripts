@@ -2,8 +2,13 @@
 
 """DOS Plotter.
 
-This script plots various types of DOS from VASP outputs.
-It uses pymatgen libraries.
+This script plots Partial DOS from VASP outputs.
+It uses pymatgen libraries (https://github.com/materialsproject/pymatgen).
+
+Author: Uthpala Herath
+
+Usage:
+    plotDOS.py {total, atomic, orbital, orbital_d}
 
 """
 
@@ -247,12 +252,10 @@ def plot_dos_d(args):
 
 
 if __name__ == "__main__":
-    print("\n--------------- \n| DOS Plotter |\n---------------\n")
     args = sys.argv[1:]
     if args:
         parser = argparse.ArgumentParser(
-            description="\nThis script plots atomic and orbital projected DOS.\n",
-            formatter_class=RawTextHelpFormatter,
+            description=__doc__, formatter_class=RawTextHelpFormatter,
         )
         subparsers = parser.add_subparsers(help="sub-command help")
 

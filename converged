@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
-VASP convergence test
+VASP convergence test.
 
 Author: Uthpala Herath
 
-This script uses pymatgen to read the vasp.xml file 
-in a directory to check if the DFT calculation 
+This tiny script uses pymatgen (github.com/materialsproject/pymatgen)
+to read the vasp.xml file in a directory to check if the DFT calculation 
 has reached electronic and/or ionic convergence. 
 
 Place the script somewhere that is accessed globally.
@@ -15,7 +15,6 @@ Usage:
 $ converged
 
 """
-
 
 import warnings
 

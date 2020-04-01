@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 """ Vacancy POSCAR Formatter.
 
-This script takes a POSCAR created with sod and reformats it
-to create the POSCAR for the vacancy structure
+This script takes in a POSCAR created with SOD (github.com/gcmt-group/sod) and reformats it
+to create the POSCAR without intermediate symbols.
+For instance, if you want to create oxygen vacancies you would mark the oxygen atoms
+for removal with an 'X' symbol under #newsymbol in the INSOD file. This script will remove
+those vacancies and create a clean POSCAR. This is helpful when you have a large number of
+configurations.
+
+Author: Uthpala Herath
 
 Usage:
 vacancyPOSCARformatter.py <infile> <outfile>
@@ -101,7 +107,7 @@ def formatter(infile="POSCAR", outfile="POSCAR_new"):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Vacancy POSCAR Formatter")
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("infile", type=str, help="Input POSCAR name")
     parser.add_argument("outfile", type=str, help="Formatted output POSCAR name")
     args = parser.parse_args()
