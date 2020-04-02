@@ -11,8 +11,7 @@ configurations.
 Author: Uthpala Herath
 
 Usage:
-vacancyPOSCARformatter.py <infile> <outfile>
-
+vacancyPOSCARFormatter.py <infile> <outfile>
 
 """
 
