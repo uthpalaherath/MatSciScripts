@@ -1,0 +1,85 @@
+# VASP INCAR TEMPLATE
+# -Uthpala Herath
+
+#-------------------- STARTING PARAMETERS --------------------
+system   =  Default
+#ICHARG = 11
+GGA = PS
+PREC      =  Accurate
+LREAL     = Auto
+ADDGRID   = .TRUE.
+LASPH = .TRUE.
+LMAXMIX   =  4 # d-orbitals:4, f-orbtials:6
+ISYM = -1
+#NBANDS = 60
+
+#-------------------- OUTPUTS --------------------
+LORBIT = 11
+LWAVE = .FALSE.
+LCHARG = .TRUE.
+
+#-------------------- PARALLELIZATION --------------------
+NCORE   = 10
+NSIM   = 2
+#NPAR = 10
+KPAR = 4
+
+#-------------------- ELECTRONIC MINIMIZATION --------------------
+ENCUT     = 600
+EDIFF     =  1E-08
+NELM      =  100
+NELMIN    =  8
+IALGO = 38
+ALGO = Normal
+
+#-------------------- IONIC RELAXATION --------------------
+#EDIFFG = -1E-04
+#ISIF = 3
+#IBRION = 2 #CGA:2, Phonons:8
+#NSW = 100
+
+#-------------------- DOS --------------------
+ISMEAR    = 2    # Metals:2, SC/Insulators:-5, 0, Bands:0
+SIGMA     = 0.2 # Metals:0.2, SC/Insulators:0.05
+#NEDOS = 3000
+
+#-------------------- SPIN --------------------
+ISPIN     =  1
+#MAGMOM    = 4*0 4*0 4*3.7 12*0
+
+#-------------------- DFT+U --------------------
+LDAU      =  .FALSE.
+LDAUTYPE  =  1
+LDAUL     =  -1 -1  2 -1
+LDAUU     =  0.0 0.0 2.7 0.0
+LDAUJ     =  0.0 0.0 1.0 0.0
+LDAUPRINT =  2
+
+#-------------------- VCA --------------------
+#VCA    =   0.30  0.70  1.00  1.00
+
+#-------------------- HF --------------------
+LHFCALC = .FALSE.
+TIME = 0.4
+AEXX    = 1.0
+ALDAC   = 0.0
+AGGAC   = 0.0
+PRECFOCK  = Normal  ! used PRECFOCK = Normal for high quality calculations
+NKRED     = 2     ! omit flag for high quality calculations
+
+#-------------------- WANNIER90 --------------------
+LWANNIER90 = .FALSE.
+LWRITE_UNK = .FALSE.
+
+#-------------------- LOPTICS --------------------
+LOPTICS = .FALSE.
+
+#-------------------- SOC --------------------
+#LSORBIT    = .TRUE.
+#SAXIS      = 0 0 1
+#GGA_COMPAT = .FALSE.
+
+#-------------------- VDW Correction--------------------
+#GGA=OR
+#LUSE_VDW=.TRUE.
+#AGGAC = 0.0000
