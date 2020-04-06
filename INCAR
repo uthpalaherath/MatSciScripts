@@ -79,7 +79,12 @@ LOPTICS = .FALSE.
 #SAXIS      = 0 0 1
 #GGA_COMPAT = .FALSE.
 
-#-------------------- VDW Correction--------------------
+#-------------------- VDW Correction --------------------
 #GGA=OR
 #LUSE_VDW=.TRUE.
 #AGGAC = 0.0000
+
+ #-------------------- NEB --------------------
+ #LCLIMB = .TRUE.
+ #ICHAIN = 0
+ #IMAGES = 8
