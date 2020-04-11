@@ -57,7 +57,7 @@ echo "Done. Ready to run NEB with VASP."
 # Reset PERTURB=FALSE
 sed -i 's/PERTURB=TRUE/PERTURB=FALSE/g' INPUT
 rm -rf results_old*
-
+rm -rf linint
 
 
 
