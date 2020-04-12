@@ -32,13 +32,14 @@ echo "Interpolated images copied into linint directory. Running dispy..."
 
 # Running dispy without perturbing
 # Unperturbed input = INPUT
-
+# IMAGES = Total number of images
+sed -i 's/PERTURB=.*/PERTURB=FALSE/' INPUT
+sed -i "s/IMAGES=.*/IMAGES=$3/" INPUT
 dispy INPUT
 
 # Check results/output.out for the desired irreducible representation number.
 # Set IRR_NUM in INPUT accordingly and PERTURB = TRUE.
 # Automate this for the first number for now.
-
 sed -i 's/PERTURB=FALSE/PERTURB=TRUE/g' INPUT
 
 # running dispy for the pertubation
