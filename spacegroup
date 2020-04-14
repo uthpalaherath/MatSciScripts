@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+"""
+Spacegroup.
+
+Author: Uthpala Herath
+
+This tiny script uses PyChemia (github.com/MaterialsDiscovery/PyChemia) 
+to read the POSCAR file in a directory and returns its spacegroup.
+
+Place the script somewhere that is accessed globally.
+
+Usage: 
+
+$ spacegroup 
+
+"""
+import pychemia
+
+st = pychemia.code.vasp.read_poscar("POSCAR")
+cs = pychemia.crystal.CrystalSymmetry(st)
+print(cs.get_spacegroup())
