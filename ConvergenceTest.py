@@ -37,12 +37,12 @@ def load_poscar():
     Also creates backups of INCAR and KPOINTS.
     """
 
-    if os.path.exists("INCAR")
+    if os.path.exists("INCAR"):
         os.rename("INCAR", "INCAR.bak")
     else:
         print("INCAR not found!")
 
-    if os.path.exists("KPOINTS")
+    if os.path.exists("KPOINTS"):
         os.rename("KPOINTS", "KPOINTS.bak")
     else:
         print("KPOINTS not found!")
