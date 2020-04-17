@@ -123,7 +123,7 @@ def encut(args):
         pspdir=args.pspdir,
         extra_vars=args.extra_vars,
         energy_tolerance=args.energy_tolerance,
-        psp_options=args.psp_options
+        psp_options=args.psp_options,
     )
 
     encut_conv.run(args.np)
@@ -257,15 +257,15 @@ if __name__ == "__main__":
         )
         parser_kgrid.add_argument(
             "-psp_options",
-            help="Pseudopotential options. "
+            help="Pseudopotential options. ",
             default=None,
-            type=json.loads
+            type=json.loads,
         )
         parser_kgrid.add_argument(
-             "-energy_tolerance",
-             default=1e-4,
-             type=float,
-             help="The energy difference required for convergence per atom",
+            "-energy_tolerance",
+            default=1e-4,
+            type=float,
+            help="The energy difference required for convergence per atom",
         )
 
         parser_kgrid.set_defaults(func=kgrid)
@@ -277,7 +277,6 @@ if __name__ == "__main__":
         )
         parser_encut.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
-
         )
         parser_encut.add_argument(
             "-pspdir",
@@ -291,15 +290,15 @@ if __name__ == "__main__":
         )
         parser_encut.add_argument(
             "-psp_options",
-            help="Pseudopotential options. "
+            help="Pseudopotential options. ",
             default=None,
-            type=json.loads
+            type=json.loads,
         )
         parser_encut.add_argument(
-             "-energy_tolerance",
-             default=1e-4,
-             type=float,
-             help="The energy difference required for convergence per atom",
+            "-energy_tolerance",
+            default=1e-4,
+            type=float,
+            help="The energy difference required for convergence per atom",
         )
         parser_encut.set_defaults(func=encut)
 
@@ -310,7 +309,6 @@ if __name__ == "__main__":
         )
         parser_complete.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
-
         )
         parser_complete.add_argument(
             "-pspdir",
@@ -324,15 +322,15 @@ if __name__ == "__main__":
         )
         parser_complete.add_argument(
             "-psp_options",
-            help="Pseudopotential options. "
+            help="Pseudopotential options. ",
             default=None,
-            type=json.loads
+            type=json.loads,
         )
         parser_complete.add_argument(
-             "-energy_tolerance",
-             default=1e-4,
-             type=float,
-             help="The energy difference required for convergence per atom",
+            "-energy_tolerance",
+            default=1e-4,
+            type=float,
+            help="The energy difference required for convergence per atom",
         )
         parser_complete.set_defaults(func=complete)
 
@@ -362,9 +360,9 @@ if __name__ == "__main__":
         )
         parser_relax.add_argument(
             "-psp_options",
-            help="Pseudopotential options. "
+            help="Pseudopotential options. ",
             default=None,
-            type=json.loads
+            type=json.loads,
         )
 
         # parser_relax.add_argument(
