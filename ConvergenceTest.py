@@ -186,6 +186,7 @@ def relax(args):
         pspdir=args.pspdir,
         max_calls=args.max_calls,
         extra_vars=args.extra_vars,
+        energy_tolerance=args.energy_tolerance,
     )
     relax_st.run(args.np)
 
@@ -291,7 +292,7 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_relax.add_argument(
-            "-target_forces", default=1e-3, type=float, help="Target force difference",
+            "-target_forces", default=1e-4, type=float, help="Target force difference",
         )
         parser_relax.add_argument(
             "-max_calls",
@@ -299,7 +300,9 @@ if __name__ == "__main__":
             type=int,
             help="Number of calls for copying CONTCAR to POSCAR",
         )
-
+         parser_relax.add_argument(
+            "-energy_tolerance", default=1e-8, type=float, help="The energy difference required for convergence per atom",
+        )
         parser_relax.set_defaults(func=relax)
 
         # End of sub-parsers
