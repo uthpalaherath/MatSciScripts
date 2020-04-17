@@ -13,17 +13,18 @@ The VASP executable is assumed to be vasp_std.
 
 Usage:
 
-$ ConvergenceTest.py {kgrid,encut,complete} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA}
+$ ConvergenceTest.py {kgrid,encut,complete} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA} -update
 
 E.g.-
 
-$ ConvergenceTest.py encut -np 16 -extra_vars '{"VCA" : "0.3 0.7 1.0 1.0"}" -pspdir potpaw_PBE
+$ ConvergenceTest.py encut -np 16 -extra_vars '{"LVCADER" : ".TRUE.", "VCA" : "0.3 0.7 1.0 1.0"}' -pspdir potpaw_PBE -update
 
 """
 
 import argparse
 import json
 import os
+import re
 import sys
 from argparse import RawTextHelpFormatter
 
@@ -55,7 +56,7 @@ def kgrid(args):
         extra_vars=args.extra_vars,
     )
     kpt_conv.run(args.np)
-    print("k-grid coverged: ", kpt_conv.success)
+    print("\nk-grid coverged: ", kpt_conv.success)
 
     if kpt_conv.success == True:
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
@@ -63,6 +64,23 @@ def kgrid(args):
         print("k-grid convergence failed.")
     os.rename("INCAR.bak", "INCAR")
     os.rename("KPOINTS.bak", "KPOINTS")
+
+    # Create new  KPOINTS file
+    if args.update:
+        f = open("KPOINTS", "w")
+        f.write("Automatic mesh\n")
+        f.write("0\n")
+        f.write("Gamma\n")
+        f.write(
+            "%d %d %d\n"
+            % (
+                kpt_conv.best_kpoints.grid[0],
+                kpt_conv.best_kpoints.grid[1],
+                kpt_conv.best_kpoints.grid[2],
+            )
+        )
+        f.write("0 0 0")
+        f.close()
 
 
 def encut(args):
@@ -81,7 +99,7 @@ def encut(args):
         energy_tolerance=1e-3,
     )
     encut_conv.run(args.np)
-    print("ENCUT coverged: ", encut_conv.success)
+    print("\nENCUT coverged: ", encut_conv.success)
 
     if encut_conv.success == True:
         print("Optimal ENCUT: ", encut_conv.best_encut)
@@ -89,6 +107,15 @@ def encut(args):
         print("ENCUT convergence failed.")
     os.rename("INCAR.bak", "INCAR")
     os.rename("KPOINTS.bak", "KPOINTS")
+
+    if args.update:
+        # Update INCAR with new ENCUT
+        estr = "ENCUT = " + encut_conv.best_encut
+        with open("INCAR", "r") as sources:
+            lines = sources.readlines()
+        with open("INCAR", "w") as sources:
+            for line in lines:
+                sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
 
 
 def complete(args):
@@ -125,6 +152,12 @@ if __name__ == "__main__":
             help="Pseudopotential",
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
+        parser_kgrid.add_argument(
+            "-update",
+            help="Write new KPOINTS file? (Will use a Gamma centered mesh.)",
+            action="store_true",
+        )
+
         parser_kgrid.set_defaults(func=kgrid)
 
         # parser for encut
@@ -142,6 +175,9 @@ if __name__ == "__main__":
             help="Pseudopotential",
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
+        parser_encut.add_argument(
+            "-update", help="Update INCAR with new ENCUT?", action="store_true",
+        )
         parser_encut.set_defaults(func=encut)
 
         # parser for both k-grid and encut
@@ -158,6 +194,9 @@ if __name__ == "__main__":
             type=str,
             help="Pseudopotential",
             choices=["potpaw_LDA", "potpaw_PBE"],
+        )
+        parser_complete.add_argument(
+            "-update", help="Update INCAR and KPOINTS?", action="store_true",
         )
         parser_complete.set_defaults(func=complete)
 
