@@ -13,11 +13,11 @@ The VASP executable is assumed to be vasp_std.
 
 Usage:
 
-$ convergenceTest.py {kgrid,encut,complete} -np <number of processors> -extra_vars {'key':'value'} -pspdir {potpaw_PBE,potpaw_LDA}
+$ convergenceTest.py {kgrid,encut,complete} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA}
 
 E.g.-
 
-$ convergenceTest.py encut -np 16 -extra_vars {'VCA':'0.3 0.7 1.0 1.0'} -pspdir potpaw_PBE
+$ convergenceTest.py encut -np 16 -extra_vars '{"VCA" : "0.3 0.7 1.0 1.0"}" -pspdir potpaw_PBE
 
 """
 
