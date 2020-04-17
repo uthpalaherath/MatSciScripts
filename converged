@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-VASP convergence test.
+VASP convergence checker.
 
 Author: Uthpala Herath
 
