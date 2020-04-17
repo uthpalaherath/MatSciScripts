@@ -27,9 +27,9 @@ import argparse
 import json
 import os
 import re
+import shutil
 import sys
 from argparse import RawTextHelpFormatter
-from shutil import copyfile
 
 import pychemia
 
@@ -152,9 +152,15 @@ def relax(args):
     print("\nRunning ionic relaxation...")
 
     if os.path.exists("POSCAR"):
-        copyfile("POSCAR", "POSCAR.bak")
+        shutil.copy("POSCAR", "originalPOSCAR")
     else:
         print("POSCAR not found! ")
+        sys.exit()
+
+    if os.path.exists("INCAR"):
+        shutil.copy("INCAR", "originalINCAR")
+    else:
+        print("INCAR not found!")
         sys.exit()
 
     # retrieve ENCUT from INCAR
@@ -187,6 +193,7 @@ def relax(args):
 
     # Test if relaxed
     ediffg = abs(pychemia.code.vasp.VaspInput("INCAR").EDIFFG)
+    vaspout = pychemia.code.vasp.VaspOutput("OUTCAR")
     avg_force = vaspout.relaxation_info()["avg_force"]
     print("EDIFFG = %f and Average force = %f" % (ediffg, avg_force))
 
@@ -194,9 +201,6 @@ def relax(args):
         print("Forces are converged.")
     else:
         print("Forces are not converged.")
-
-    # restoring original INCAR
-    os.rename("INCAR.bak", "INCAR")
 
 
 if __name__ == "__main__":
