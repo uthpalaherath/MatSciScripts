@@ -23,6 +23,7 @@ $ ConvergenceTest.py encut -np 16 -extra_vars '{"VCA" : "0.3 0.7 1.0 1.0"}" -psp
 
 import argparse
 import json
+import os
 import sys
 from argparse import RawTextHelpFormatter
 
@@ -32,7 +33,10 @@ import pychemia
 def load_poscar():
     """
     Returns the structure retrieved from POSCAR.
+    Also creates backups of INCAR and KPOINTS.
     """
+    os.rename("INCAR", "INCAR.bak")
+    os.rename("KPOINTS", "KPOINTS.bak")
     return pychemia.code.vasp.read_poscar("POSCAR")
 
 
@@ -57,6 +61,8 @@ def kgrid(args):
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
     else:
         print("k-grid convergence failed.")
+    os.rename("INCAR.bak", "INCAR")
+    os.rename("KPOINTS.bak", "KPOINTS")
 
 
 def encut(args):
@@ -81,6 +87,8 @@ def encut(args):
         print("Optimal ENCUT: ", encut_conv.best_encut)
     else:
         print("ENCUT convergence failed.")
+    os.rename("INCAR.bak", "INCAR")
+    os.rename("KPOINTS.bak", "KPOINTS")
 
 
 def complete(args):
