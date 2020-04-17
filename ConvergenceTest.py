@@ -10,14 +10,16 @@ This script is based on Pedram Tavazohi's tutorial on PyChemia
 energy cut-off convergence. It is assumed that the structure file is named POSCAR
 and the pseudopotentials are stored in ~/.vasp/PP-VASP/{potpaw_PBE,potpaw_LDA}/.
 The VASP executable is assumed to be vasp_std.
+Perform the ionic relaxation only after both ENCUT and k-grid convergences are done.
 
 Usage:
 
-$ ConvergenceTest.py {kgrid,encut,complete} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA} -update
+$ ConvergenceTest.py {kgrid,encut,complete,relax} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA} -update
 
 E.g.-
 
 $ ConvergenceTest.py encut -np 16 -extra_vars '{"LVCADER" : ".TRUE.", "VCA" : "0.3 0.7 1.0 1.0"}' -pspdir potpaw_PBE -update
+$ ConvergenceTest.py relax -np 16 -max_calls 30
 
 """
 
@@ -27,6 +29,7 @@ import os
 import re
 import sys
 from argparse import RawTextHelpFormatter
+from shutil import copyfile
 
 import pychemia
 
@@ -141,6 +144,61 @@ def complete(args):
     encut(args)
 
 
+def relax(args):
+    """
+    Function to relax structure after kgrid and encut convergence is complete.
+    """
+
+    print("\nRunning ionic relaxation...")
+
+    if os.path.exists("POSCAR"):
+        copyfile("POSCAR", "POSCAR.bak")
+    else:
+        print("POSCAR not found! ")
+        sys.exit()
+
+    # retrieve ENCUT from INCAR
+    fi = open("INCAR", "r")
+    data = fi.read()
+    fi.close()
+    encut_val = float(re.findall(r"ENCUT\s*=\s*([\d.]*)", data)[0].split()[0])
+
+    # retrieve kgrid from KPOINTS
+    fi = open("KPOINTS", "r")
+    for i in range(3):
+        fi.readline()
+    gridline = fi.readline()
+    fi.close()
+    gridline = [int(x) for x in gridline.split()]
+
+    st = load_poscar()
+    relax_st = pychemia.code.vasp.task.IonRelaxation(
+        structure=st,
+        workdir=".",
+        target_forces=args.target_forces,
+        executable="vasp_std",
+        encut=encut_val,
+        kp_grid=gridline,
+        pspdir=args.pspdir,
+        max_calls=args.max_calls,
+        extra_vars=args.extra_vars,
+    )
+    relax_st.run(args.np)
+
+    # Test if relaxed
+    ediffg = abs(pychemia.code.vasp.VaspInput("INCAR").EDIFFG)
+    avg_force = vaspout.relaxation_info()["avg_force"]
+    print("EDIFFG = %f and Average force = %f" % (ediffg, avg_force))
+
+    if avg_force <= ediffg:
+        print("Forces are converged.")
+    else:
+        print("Forces are not converged.")
+
+    # restoring original INCAR
+    os.rename("INCAR.bak", "INCAR")
+
+
 if __name__ == "__main__":
 
     args = sys.argv[1:]
@@ -215,9 +273,36 @@ if __name__ == "__main__":
         )
         parser_complete.set_defaults(func=complete)
 
+        # parser for ionic relaxation
+        parser_relax = subparsers.add_parser("relax", help="Ionic relaxation")
+        parser_relax.add_argument(
+            "-np", default=1, type=int, help="Number of processors",
+        )
+        parser_relax.add_argument(
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters"
+        )
+        parser_relax.add_argument(
+            "-pspdir",
+            default="potpaw_PBE",
+            type=str,
+            help="Pseudopotential",
+            choices=["potpaw_LDA", "potpaw_PBE"],
+        )
+        parser_relax.add_argument(
+            "-target_forces", default=1e-3, type=float, help="Target force difference",
+        )
+        parser_relax.add_argument(
+            "-max_calls",
+            default=20,
+            type=int,
+            help="Number of calls for copying CONTCAR to POSCAR",
+        )
+
+        parser_relax.set_defaults(func=relax)
+
         # End of sub-parsers
         args = parser.parse_args()
         args.func(args)
     else:
         print("Usage: convergencetest.py [-h]")
-        print("{kgrid, encut, complete}")
+        print("{kgrid, encut, complete, relax}")
