@@ -41,7 +41,7 @@ def kgrid(args):
     Function for k-grid convergence.
 
     """
-    print("Running k-grid convergence.")
+    print("\nRunning k-grid convergence...")
     st = load_poscar()
     kpt_conv = pychemia.code.vasp.task.ConvergenceKPointGrid(
         structure=st,
@@ -51,10 +51,10 @@ def kgrid(args):
         extra_vars=args.extra_vars,
     )
     kpt_conv.run(args.np)
-    print("k-grid coverged:", kpt_conv.success)
+    print("k-grid coverged: ", kpt_conv.success)
 
     if kpt_conv.success == True:
-        print("Optimal k-grid:", kpt_conv.best_kpoints.grid)
+        print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
     else:
         print("k-grid convergence failed.")
 
@@ -64,7 +64,7 @@ def encut(args):
     Function for ENCUT convergence.
 
     """
-    print("Running ENCUT convergence.")
+    print("\nRunning ENCUT convergence...")
     st = load_poscar()
     encut_conv = pychemia.code.vasp.task.ConvergenceCutOffEnergy(
         structure=st,
@@ -75,10 +75,10 @@ def encut(args):
         energy_tolerance=1e-3,
     )
     encut_conv.run(args.np)
-    print("ENCUT coverged:", encut_conv.success)
+    print("ENCUT coverged: ", encut_conv.success)
 
     if encut_conv.success == True:
-        print("Optimal ENCUT:", encut_conv.best_encut)
+        print("Optimal ENCUT: ", encut_conv.best_encut)
     else:
         print("ENCUT convergence failed.")
 
