@@ -40,12 +40,12 @@ def load_poscar():
     if os.path.exists("INCAR"):
         os.rename("INCAR", "INCAR.bak")
     else:
-        print("INCAR not found!")
+        print("INCAR not found! Generating with PyChemia.")
 
     if os.path.exists("KPOINTS"):
         os.rename("KPOINTS", "KPOINTS.bak")
     else:
-        print("KPOINTS not found!")
+        print("KPOINTS not found! Generating with PyChemia.")
 
     return pychemia.code.vasp.read_poscar("POSCAR")
 
