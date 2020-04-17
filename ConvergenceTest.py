@@ -66,6 +66,8 @@ def kgrid(args):
         executable="vasp_std",
         pspdir=args.pspdir,
         extra_vars=args.extra_vars,
+        psp_options=args.psp_options,
+        energy_tolerance=args.energy_tolerance,
     )
     kpt_conv.run(args.np)
     print("\nk-grid coverged: ", kpt_conv.success)
@@ -120,8 +122,10 @@ def encut(args):
         executable="vasp_std",
         pspdir=args.pspdir,
         extra_vars=args.extra_vars,
-        energy_tolerance=1e-3,
+        energy_tolerance=args.energy_tolerance,
+        psp_options=args.psp_options
     )
+
     encut_conv.run(args.np)
     print("\nENCUT coverged: ", encut_conv.success)
 
@@ -237,7 +241,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_kgrid.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
         )
         parser_kgrid.add_argument(
             "-pspdir",
@@ -251,6 +255,18 @@ if __name__ == "__main__":
             help="Write new KPOINTS file? (Will use a Gamma centered mesh.)",
             action="store_true",
         )
+        parser_kgrid.add_argument(
+            "-psp_options",
+            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            default=None,
+            type=json.loads
+        )
+        parser_kgrid.add_argument(
+             "-energy_tolerance",
+             default=1e-4,
+             type=float,
+             help="The energy difference required for convergence per atom",
+        )
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -260,7 +276,8 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_encut.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+
         )
         parser_encut.add_argument(
             "-pspdir",
@@ -272,6 +289,18 @@ if __name__ == "__main__":
         parser_encut.add_argument(
             "-update", help="Update INCAR with new ENCUT?", action="store_true",
         )
+        parser_encut.add_argument(
+            "-psp_options",
+            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            default=None,
+            type=json.loads
+        )
+        parser_encut.add_argument(
+             "-energy_tolerance",
+             default=1e-4,
+             type=float,
+             help="The energy difference required for convergence per atom",
+        )
         parser_encut.set_defaults(func=encut)
 
         # parser for both k-grid and encut
@@ -280,7 +309,8 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_complete.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+
         )
         parser_complete.add_argument(
             "-pspdir",
@@ -292,6 +322,18 @@ if __name__ == "__main__":
         parser_complete.add_argument(
             "-update", help="Update INCAR and KPOINTS?", action="store_true",
         )
+        parser_complete.add_argument(
+            "-psp_options",
+            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            default=None,
+            type=json.loads
+        )
+        parser_complete.add_argument(
+             "-energy_tolerance",
+             default=1e-4,
+             type=float,
+             help="The energy difference required for convergence per atom",
+        )
         parser_complete.set_defaults(func=complete)
 
         # parser for ionic relaxation
@@ -300,7 +342,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_relax.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
         )
         parser_relax.add_argument(
             "-pspdir",
@@ -318,6 +360,13 @@ if __name__ == "__main__":
             type=int,
             help="Number of calls for copying CONTCAR to POSCAR",
         )
+        parser_relax.add_argument(
+            "-psp_options",
+            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            default=None,
+            type=json.loads
+        )
+
         # parser_relax.add_argument(
         #     "-energy_tolerance",
         #     default=1e-8,
