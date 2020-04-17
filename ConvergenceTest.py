@@ -128,7 +128,7 @@ def encut(args):
                 lines = sources.readlines()
             with open("INCAR", "w") as sources:
                 for line in lines:
-                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
+                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", str(estr), line))
         else:
             print("Update failed!")
 
