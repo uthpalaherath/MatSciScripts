@@ -36,8 +36,17 @@ def load_poscar():
     Returns the structure retrieved from POSCAR.
     Also creates backups of INCAR and KPOINTS.
     """
-    os.rename("INCAR", "INCAR.bak")
-    os.rename("KPOINTS", "KPOINTS.bak")
+
+    if os.path.exists("INCAR")
+        os.rename("INCAR", "INCAR.bak")
+    else:
+        print("INCAR not found!")
+
+    if os.path.exists("KPOINTS")
+        os.rename("KPOINTS", "KPOINTS.bak")
+    else:
+        print("KPOINTS not found!")
+
     return pychemia.code.vasp.read_poscar("POSCAR")
 
 
