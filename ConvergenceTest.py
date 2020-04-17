@@ -14,11 +14,11 @@ Perform the ionic relaxation only after both ENCUT and k-grid convergences are d
 
 Usage:
 
-$ ConvergenceTest.py {kgrid,encut,complete,relax} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA} -update
+$ ConvergenceTest.py {kgrid,encut,complete,relax} -np <number of processors> -extra_vars '{"key" : "value"}' -pspdir {potpaw_PBE,potpaw_LDA} -update -psp_options '{"key" : "value"}'
 
 E.g.-
 
-$ ConvergenceTest.py encut -np 16 -extra_vars '{"LVCADER" : ".TRUE.", "VCA" : "0.3 0.7 1.0 1.0"}' -pspdir potpaw_PBE -update
+$ ConvergenceTest.py encut -np 16 -extra_vars '{"LVCADER" : ".TRUE.", "VCA" : "0.3 0.7 1.0 1.0"}' -pspdir potpaw_PBE -update -psp_options '{"Sr":"sv"}'
 $ ConvergenceTest.py relax -np 16 -max_calls 30
 
 """
@@ -241,7 +241,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_kgrid.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
         )
         parser_kgrid.add_argument(
             "-pspdir",
@@ -257,7 +257,7 @@ if __name__ == "__main__":
         )
         parser_kgrid.add_argument(
             "-psp_options",
-            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            help="Pseudopotential options. "
             default=None,
             type=json.loads
         )
@@ -276,7 +276,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_encut.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
 
         )
         parser_encut.add_argument(
@@ -291,7 +291,7 @@ if __name__ == "__main__":
         )
         parser_encut.add_argument(
             "-psp_options",
-            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            help="Pseudopotential options. "
             default=None,
             type=json.loads
         )
@@ -309,7 +309,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_complete.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
 
         )
         parser_complete.add_argument(
@@ -324,7 +324,7 @@ if __name__ == "__main__":
         )
         parser_complete.add_argument(
             "-psp_options",
-            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            help="Pseudopotential options. "
             default=None,
             type=json.loads
         )
@@ -342,7 +342,7 @@ if __name__ == "__main__":
             "-np", default=1, type=int, help="Number of processors",
         )
         parser_relax.add_argument(
-            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters. E.g.- '{"NCORE":"1"}'"
+            "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
         )
         parser_relax.add_argument(
             "-pspdir",
@@ -362,7 +362,7 @@ if __name__ == "__main__":
         )
         parser_relax.add_argument(
             "-psp_options",
-            help="Pseudopotential options. E.g.- '{"Sr":"sv"}' "
+            help="Pseudopotential options. "
             default=None,
             type=json.loads
         )
