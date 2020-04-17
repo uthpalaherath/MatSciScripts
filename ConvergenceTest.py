@@ -83,7 +83,7 @@ def kgrid(args):
             f.write("0 0 0")
             f.close()
         else:
-            print("Updated failed!")
+            print("Update failed!")
 
 
 def encut(args):
