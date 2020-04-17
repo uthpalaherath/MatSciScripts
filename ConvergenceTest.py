@@ -74,8 +74,17 @@ def kgrid(args):
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
     else:
         print("k-grid convergence failed!")
-    os.rename("INCAR.bak", "INCAR")
-    os.rename("KPOINTS.bak", "KPOINTS")
+
+    # restoring files
+    if os.path.exists("INCAR.bak"):
+        os.rename("INCAR.bak", "INCAR")
+    else:
+        print("INCAR.bak not found!")
+
+    if os.path.exists("KPOINTS.bak"):
+        os.rename("KPOINTS.bak", "KPOINTS")
+    else:
+        print("KPOINTS.bak not found! ")
 
     # Create new  KPOINTS file
     if args.update:
@@ -120,8 +129,17 @@ def encut(args):
         print("Optimal ENCUT: ", encut_conv.best_encut)
     else:
         print("ENCUT convergence failed!")
-    os.rename("INCAR.bak", "INCAR")
-    os.rename("KPOINTS.bak", "KPOINTS")
+
+    # restoring files
+    if os.path.exists("INCAR.bak"):
+        os.rename("INCAR.bak", "INCAR")
+    else:
+        print("INCAR.bak not found!")
+
+    if os.path.exists("KPOINTS.bak"):
+        os.rename("KPOINTS.bak", "KPOINTS")
+    else:
+        print("KPOINTS.bak not found! ")
 
     if args.update:
         if encut_conv.success == True:
@@ -300,12 +318,12 @@ if __name__ == "__main__":
             type=int,
             help="Number of calls for copying CONTCAR to POSCAR",
         )
-       # parser_relax.add_argument(
-       #     "-energy_tolerance",
-       #     default=1e-8,
-       #     type=float,
-       #     help="The energy difference required for convergence per atom",
-       # )
+        # parser_relax.add_argument(
+        #     "-energy_tolerance",
+        #     default=1e-8,
+        #     type=float,
+        #     help="The energy difference required for convergence per atom",
+        # )
         parser_relax.set_defaults(func=relax)
 
         # End of sub-parsers
