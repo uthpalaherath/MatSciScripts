@@ -61,26 +61,29 @@ def kgrid(args):
     if kpt_conv.success == True:
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
     else:
-        print("k-grid convergence failed.")
+        print("k-grid convergence failed!")
     os.rename("INCAR.bak", "INCAR")
     os.rename("KPOINTS.bak", "KPOINTS")
 
     # Create new  KPOINTS file
     if args.update:
-        f = open("KPOINTS", "w")
-        f.write("Automatic mesh\n")
-        f.write("0\n")
-        f.write("Gamma\n")
-        f.write(
-            "%d %d %d\n"
-            % (
-                kpt_conv.best_kpoints.grid[0],
-                kpt_conv.best_kpoints.grid[1],
-                kpt_conv.best_kpoints.grid[2],
+        if kpt_conv.success == True:
+            f = open("KPOINTS", "w")
+            f.write("Automatic mesh\n")
+            f.write("0\n")
+            f.write("Gamma\n")
+            f.write(
+                "%d %d %d\n"
+                % (
+                    kpt_conv.best_kpoints.grid[0],
+                    kpt_conv.best_kpoints.grid[1],
+                    kpt_conv.best_kpoints.grid[2],
+                )
             )
-        )
-        f.write("0 0 0")
-        f.close()
+            f.write("0 0 0")
+            f.close()
+        else:
+            print("Updated failed!")
 
 
 def encut(args):
@@ -104,18 +107,21 @@ def encut(args):
     if encut_conv.success == True:
         print("Optimal ENCUT: ", encut_conv.best_encut)
     else:
-        print("ENCUT convergence failed.")
+        print("ENCUT convergence failed!")
     os.rename("INCAR.bak", "INCAR")
     os.rename("KPOINTS.bak", "KPOINTS")
 
     if args.update:
-        # Update INCAR with new ENCUT
-        estr = "ENCUT = " + encut_conv.best_encut
-        with open("INCAR", "r") as sources:
-            lines = sources.readlines()
-        with open("INCAR", "w") as sources:
-            for line in lines:
-                sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
+        if encut_conv.success == True:
+            # Update INCAR with new ENCUT
+            estr = "ENCUT = " + encut_conv.best_encut
+            with open("INCAR", "r") as sources:
+                lines = sources.readlines()
+            with open("INCAR", "w") as sources:
+                for line in lines:
+                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
+        else:
+            print("Update failed!")
 
 
 def complete(args):
