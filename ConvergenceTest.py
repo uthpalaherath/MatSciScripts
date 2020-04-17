@@ -186,7 +186,7 @@ def relax(args):
         pspdir=args.pspdir,
         max_calls=args.max_calls,
         extra_vars=args.extra_vars,
-        energy_tolerance=args.energy_tolerance,
+        # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
 
@@ -300,12 +300,12 @@ if __name__ == "__main__":
             type=int,
             help="Number of calls for copying CONTCAR to POSCAR",
         )
-        parser_relax.add_argument(
-            "-energy_tolerance",
-            default=1e-8,
-            type=float,
-            help="The energy difference required for convergence per atom",
-        )
+       # parser_relax.add_argument(
+       #     "-energy_tolerance",
+       #     default=1e-8,
+       #     type=float,
+       #     help="The energy difference required for convergence per atom",
+       # )
         parser_relax.set_defaults(func=relax)
 
         # End of sub-parsers
