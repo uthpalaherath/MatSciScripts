@@ -123,12 +123,12 @@ def encut(args):
     if args.update:
         if encut_conv.success == True:
             # Update INCAR with new ENCUT
-            estr = "ENCUT = " + encut_conv.best_encut
+            estr = "ENCUT = " + str(encut_conv.best_encut)
             with open("INCAR", "r") as sources:
                 lines = sources.readlines()
             with open("INCAR", "w") as sources:
                 for line in lines:
-                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", str(estr), line))
+                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
         else:
             print("Update failed!")
 
