@@ -19,6 +19,7 @@ $ ConvergenceTest.py {kgrid,encut,complete,relax} -np <number of processors> -ex
 E.g.-
 
 $ ConvergenceTest.py encut -np 16 -extra_vars '{"LVCADER" : ".TRUE.", "VCA" : "0.3 0.7 1.0 1.0"}' -pspdir potpaw_PBE -update -psp_options '{"Sr":"sv"}'
+
 $ ConvergenceTest.py relax -np 16 -max_calls 30
 
 """
