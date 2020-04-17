@@ -155,13 +155,11 @@ def relax(args):
         shutil.copy("POSCAR", "originalPOSCAR")
     else:
         print("POSCAR not found! ")
-        sys.exit()
 
     if os.path.exists("INCAR"):
         shutil.copy("INCAR", "originalINCAR")
     else:
         print("INCAR not found!")
-        sys.exit()
 
     # retrieve ENCUT from INCAR
     fi = open("INCAR", "r")
