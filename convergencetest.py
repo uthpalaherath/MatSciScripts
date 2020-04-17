@@ -43,7 +43,7 @@ def kgrid(args):
     """
     print("Running k-grid convergence.")
     st = load_poscar()
-    kpt_conv = pychemia.code.task.ConvergenceKPointGrid(
+    kpt_conv = pychemia.code.vasp.task.ConvergenceKPointGrid(
         structure=st,
         workdir=".",
         executable="vasp_std",
@@ -66,7 +66,7 @@ def encut(args):
     """
     print("Running ENCUT convergence.")
     st = load_poscar()
-    encut_conv = pychemia.code.task.ConvergenceCutOffEnergy(
+    encut_conv = pychemia.code.vasp.task.ConvergenceCutOffEnergy(
         structure=st,
         workdir=".",
         executable="vasp_std",
