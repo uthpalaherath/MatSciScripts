@@ -300,8 +300,11 @@ if __name__ == "__main__":
             type=int,
             help="Number of calls for copying CONTCAR to POSCAR",
         )
-         parser_relax.add_argument(
-            "-energy_tolerance", default=1e-8, type=float, help="The energy difference required for convergence per atom",
+        parser_relax.add_argument(
+            "-energy_tolerance",
+            default=1e-8,
+            type=float,
+            help="The energy difference required for convergence per atom",
         )
         parser_relax.set_defaults(func=relax)
 
