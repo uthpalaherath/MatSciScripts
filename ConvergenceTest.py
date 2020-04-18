@@ -224,7 +224,7 @@ def complete(args):
     """
     kgrid(args)
     if os.path.exists("KPOINTS.bak"):
-        shutil.copy("KPOINTS.bak2")
+        shutil.copy("KPOINTS.bak", "KPOINTS.bak2")
     encut(args)
     if os.path.exists("KPOINTS.bak2"):
         os.rename("KPOINTS.bak2", "KPOINTS.bak")
