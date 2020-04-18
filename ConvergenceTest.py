@@ -93,13 +93,13 @@ def backup(type):
 
     elif type == "relax":
         if os.path.exists("POSCAR"):
-            shutil.copy("POSCAR", "POSCAR.bak")
+            shutil.copy("POSCAR", "POSCAR.initial")
         else:
             print("POSCAR not found!")
             sys.exit()
 
         if os.path.exists("INCAR"):
-            shutil.copy("INCAR", "INCAR.bak")
+            shutil.copy("INCAR", "INCAR.initial")
         else:
             print("INCAR not found! Generating with PyChemia.")
 
