@@ -93,7 +93,6 @@ def backup(type):
             shutil.copy("KPOINTS", "KPOINTS.bak")
         else:
             print("KPOINTS not found! Generating with PyChemia.")
-        if os.path.exists("INCAR"):
 
     elif type == "relax":
         if os.path.exists("POSCAR"):
