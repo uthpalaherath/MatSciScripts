@@ -164,7 +164,7 @@ def kgrid(args):
             print("Update failed!")
     else:
         # restoring files
-        restore("kgrid", restore_kpoints=True)
+        restore("kgrid", restore_kpoints=True, restore_incar=True)
 
 
 def encut(args):
