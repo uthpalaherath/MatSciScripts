@@ -223,7 +223,11 @@ def complete(args):
     Function for both k-grid and ENCUT convergence.
     """
     kgrid(args)
+    if os.path.exists("KPOINTS.bak"):
+        shutil.copy("KPOINTS.bak2")
     encut(args)
+    if os.path.exists("KPOINTS.bak2")
+        os.rename("KPOINTS.bak2","KPOINTS.bak")
 
 
 def relax(args):
