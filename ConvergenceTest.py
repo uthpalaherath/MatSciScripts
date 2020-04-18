@@ -48,26 +48,30 @@ from argparse import RawTextHelpFormatter
 import pychemia
 
 
-def restore(type):
+def restore(type, restore_kpoints=False, restore_incar=False):
     """
     Restores created backups of INCAR, KPOINTS and POSCAR.
     """
 
     if type == "kgrid":
-        if os.path.exists("KPOINTS.bak"):
-            shutil.copy("KPOINTS.bak", "KPOINTS")
-        else:
-            print(
-                "KPOINTS.bak not found! KPOINTS was probably generated with PyChemia. "
-            )
-        if os.path.exists("INCAR.bak"):
-            shutil.copy("INCAR.bak", "INCAR")
-        else:
-            print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
+        if restore_kpoints:
+            if os.path.exists("KPOINTS.bak"):
+                os.rename("KPOINTS.bak", "KPOINTS")
+            else:
+                print(
+                    "KPOINTS.bak not found! KPOINTS was probably generated with PyChemia. "
+                )
+        if restore_incar:
+            if os.path.exists("INCAR.bak"):
+                os.rename("INCAR.bak", "INCAR")
+            else:
+                print(
+                    "INCAR.bak not found! INCAR was probably generated with PyChemia. "
+                )
 
     elif type == "encut":
         if os.path.exists("INCAR.bak"):
-            shutil.copy("INCAR.bak", "INCAR")
+            os.rename("INCAR.bak", "INCAR")
         else:
             print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
 
@@ -155,11 +159,12 @@ def kgrid(args):
             )
             f.write("0 0 0")
             f.close()
+            restore("kgrid", restore_incar=True)
         else:
             print("Update failed!")
     else:
         # restoring files
-        restore("kgrid")
+        restore("kgrid", restore_kpoints=True)
 
 
 def encut(args):
