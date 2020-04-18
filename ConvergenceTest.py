@@ -71,7 +71,7 @@ def restore(type, restore_kpoints=False, restore_incar=False):
 
     elif type == "encut":
         if os.path.exists("INCAR.bak"):
-            os.rename("INCAR.bak", "INCAR")
+            shutil.copy("INCAR.bak", "INCAR")
         else:
             print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
 
@@ -207,6 +207,8 @@ def encut(args):
                     sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
         else:
             print("Update failed!")
+    else:
+        restore("kgrid", restore_incar=True)
 
 
 def complete(args):
