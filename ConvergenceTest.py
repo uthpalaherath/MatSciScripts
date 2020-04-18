@@ -167,7 +167,7 @@ def kgrid(args):
         restore(restore_kpoints=True, restore_incar=True)
         if os.path.exists("INCAR.bak"):
             os.remove("INCAR.bak")
-        if os.path.exists("KPOINTS.bak")
+        if os.path.exists("KPOINTS.bak"):
             os.remove("KPOINTS.bak")
 
 def encut(args):
