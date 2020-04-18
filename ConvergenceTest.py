@@ -64,10 +64,7 @@ def restore(restore_kpoints=False, restore_incar=False):
         if os.path.exists("INCAR.bak"):
             shutil.copy("INCAR.bak", "INCAR")
         else:
-            print(
-                "INCAR.bak not found! INCAR was probably generated with PyChemia. "
-            )
-
+            print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
 
 
 def backup(type):
@@ -159,7 +156,7 @@ def kgrid(args):
             f.close()
             restore(restore_incar=True)
             if os.path.exists("INCAR"):
-                os.remove('INCAR.bak')
+                os.remove("INCAR.bak")
         else:
             print("Update failed!")
     else:
@@ -169,6 +166,7 @@ def kgrid(args):
             os.remove("INCAR.bak")
         if os.path.exists("KPOINTS.bak"):
             os.remove("KPOINTS.bak")
+
 
 def encut(args):
     """
@@ -200,7 +198,7 @@ def encut(args):
     if args.update:
         # restoring files
         restore(restore_incar=True, restore_kpoints=True)
-        if os.path.exists("KPOINTS.bak")
+        if os.path.exists("KPOINTS.bak"):
             os.remove("KPOINTS.bak")
         if encut_conv.success == True:
             # Update INCAR with new ENCUT
@@ -213,11 +211,12 @@ def encut(args):
         else:
             print("Update failed!")
     else:
-        restore(restore_incar=True,restore_kpoints=True)
-        if os.path.exists("KPOINTS.bak")
+        restore(restore_incar=True, restore_kpoints=True)
+        if os.path.exists("KPOINTS.bak"):
             os.remove("KPOINTS.bak")
-        if os.path.exists("INCAR.bak")
+        if os.path.exists("INCAR.bak"):
             os.remove("INCAR.bak")
+
 
 def complete(args):
     """
