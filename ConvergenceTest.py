@@ -35,32 +35,79 @@ from argparse import RawTextHelpFormatter
 import pychemia
 
 
+def restore(type):
+    """
+    Restores created backups of INCAR, KPOINTS and POSCAR.
+    """
+
+    if type == "kgrid":
+        if os.path.exists("KPOINTS.bak"):
+            shutil.copy("KPOINTS.bak", "KPOINTS")
+        else:
+            print(
+                "KPOINTS.bak not found! KPOINTS was probably generated with PyChemia. "
+            )
+        if os.path.exists("INCAR.bak"):
+            shutil.copy("INCAR.bak", "INCAR")
+        else:
+            print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
+
+    elif type == "encut":
+        if os.path.exists("INCAR.bak"):
+            shutil.copy("INCAR.bak", "INCAR")
+        else:
+            print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
+
+
+def backup(type):
+    """
+    Creates backups of INCAR, KPOINTS and POSCAR.
+    """
+    if type == "kgrid":
+        if os.path.exists("KPOINTS"):
+            shutil.copy("KPOINTS", "KPOINTS.bak")
+        else:
+            print("KPOINTS not found! Generating with PyChemia.")
+        if os.path.exists("INCAR"):
+            shutil.copy("INCAR", "INCAR.bak")
+        else:
+            print("INCAR not found! Generating with PyChemia.")
+
+    elif type == "encut":
+        if os.path.exists("INCAR"):
+            shutil.copy("INCAR", "INCAR.bak")
+        else:
+            print("INCAR not found! Generating with PyChemia.")
+
+    elif type == "relax":
+        if os.path.exists("POSCAR"):
+            shutil.copy("POSCAR", "POSCAR.bak")
+        else:
+            print("POSCAR not found!")
+            sys.exit()
+
+        if os.path.exists("INCAR"):
+            shutil.copy("INCAR", "INCAR.bak")
+        else:
+            print("INCAR not found! Generating with PyChemia.")
+
+
 def load_poscar():
     """
     Returns the structure retrieved from POSCAR.
-    Also creates backups of INCAR and KPOINTS.
     """
-
-    if os.path.exists("INCAR"):
-        os.rename("INCAR", "INCAR.bak")
-    else:
-        print("INCAR not found! Generating with PyChemia.")
-
-    if os.path.exists("KPOINTS"):
-        os.rename("KPOINTS", "KPOINTS.bak")
-    else:
-        print("KPOINTS not found! Generating with PyChemia.")
-
     return pychemia.code.vasp.read_poscar("POSCAR")
 
 
 def kgrid(args):
     """
     Function for k-grid convergence.
-
     """
+
     print("\nRunning k-grid convergence...")
     st = load_poscar()
+    backup("kgrid")
+
     kpt_conv = pychemia.code.vasp.task.ConvergenceKPointGrid(
         structure=st,
         workdir=".",
@@ -77,17 +124,6 @@ def kgrid(args):
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
     else:
         print("k-grid convergence failed!")
-
-    # restoring files
-    if os.path.exists("INCAR.bak"):
-        os.rename("INCAR.bak", "INCAR")
-    else:
-        print("INCAR.bak not found!")
-
-    if os.path.exists("KPOINTS.bak"):
-        os.rename("KPOINTS.bak", "KPOINTS")
-    else:
-        print("KPOINTS.bak not found! ")
 
     # Create new  KPOINTS file
     if args.update:
@@ -108,6 +144,9 @@ def kgrid(args):
             f.close()
         else:
             print("Update failed!")
+    else:
+        # restoring files
+        restore("kgrid")
 
 
 def encut(args):
@@ -117,6 +156,8 @@ def encut(args):
     """
     print("\nRunning ENCUT convergence...")
     st = load_poscar()
+    backup("encut")
+
     encut_conv = pychemia.code.vasp.task.ConvergenceCutOffEnergy(
         structure=st,
         workdir=".",
@@ -135,18 +176,9 @@ def encut(args):
     else:
         print("ENCUT convergence failed!")
 
-    # restoring files
-    if os.path.exists("INCAR.bak"):
-        os.rename("INCAR.bak", "INCAR")
-    else:
-        print("INCAR.bak not found!")
-
-    if os.path.exists("KPOINTS.bak"):
-        os.rename("KPOINTS.bak", "KPOINTS")
-    else:
-        print("KPOINTS.bak not found! ")
-
     if args.update:
+        # restoring files
+        restore("encut")
         if encut_conv.success == True:
             # Update INCAR with new ENCUT
             estr = "ENCUT = " + str(encut_conv.best_encut)
@@ -174,16 +206,6 @@ def relax(args):
 
     print("\nRunning ionic relaxation...")
 
-    if os.path.exists("POSCAR"):
-        shutil.copy("POSCAR", "originalPOSCAR")
-    else:
-        print("POSCAR not found! ")
-
-    if os.path.exists("INCAR"):
-        shutil.copy("INCAR", "originalINCAR")
-    else:
-        print("INCAR not found!")
-
     # retrieve ENCUT from INCAR
     fi = open("INCAR", "r")
     data = fi.read()
@@ -199,6 +221,7 @@ def relax(args):
     gridline = [int(x) for x in gridline.split()]
 
     st = load_poscar()
+    backup("relax")
     relax_st = pychemia.code.vasp.task.IonRelaxation(
         structure=st,
         workdir=".",
