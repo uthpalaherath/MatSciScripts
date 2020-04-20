@@ -9,6 +9,8 @@ This script uses PyChemia (github.com/MaterialsDiscovery/PyChemia.git)
 to generate a POTCAR file from a given POSCAR.
 It is assumed that the structure file is named POSCAR (otherwise use -poscar)
 and the pseudopotentials are stored in ~/.vasp/PP-VASP/{potpaw_PBE,potpaw_LDA}/.
+If the repeating order of atoms in the POSCAR is to be kept use the
+-heterostructure flag.
 
 Usage:
 
@@ -27,6 +29,7 @@ import argparse
 import json
 import sys
 from argparse import RawTextHelpFormatter
+from itertools import groupby
 
 import pychemia
 
@@ -45,9 +48,15 @@ def makePOTCAR(args):
     st = load_poscar(args.poscar)
 
     pychemia.code.vasp.poscar.write_potcar(
-        structure=st, pspdir=args.pspdir, options=args.psp_options,
+        structure=st,
+        pspdir=args.pspdir,
+        options=args.psp_options,
+        heterostructure=args.heterostructure,
     )
-    print("POTCAR generated for: ", pychemia.code.vasp.poscar.get_species_list(st))
+    if args.heterostructure:
+        print("POTCAR generated for: ", [i[0] for i in groupby(st.symbols)])
+    else:
+        print("POTCAR generated for: ", pychemia.code.vasp.poscar.get_species_list(st))
 
 
 if __name__ == "__main__":
@@ -71,6 +80,12 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "-poscar", default="POSCAR", type=str, help="POSCAR file.",
+    )
+
+    parser.add_argument(
+        "-heterostructure",
+        action="store_true",
+        help="Keep repeating order of atoms in POSCAR?",
     )
 
     # End of sub-parsers

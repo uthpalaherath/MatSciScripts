@@ -13,6 +13,8 @@ in ~/.vasp/PP-VASP/{potpaw_PBE,potpaw_LDA}/. The VASP executable is
 assumed to be vasp_std. Perform the ionic relaxation only after both
 ENCUT and k-grid convergences are done. The converged values will
 automatically be read for the ionic relaxation.
+For keeping the repeating order in POSCAR when generating POTCARs
+use -heterostructure flag.
 
 Usage:
 
@@ -20,7 +22,10 @@ $ ConvergenceTest.py {kgrid,encut,complete,relax}
                     -np <number of processors>
                     -extra_vars '{"key" : "value"}'
                     -pspdir {potpaw_PBE,potpaw_LDA}
-                    -update -psp_options '{"key" : "value"}'
+                    -update
+                    -psp_options '{"key" : "value"}'
+                    -heterostructure
+
 
 E.g.-
 
@@ -128,6 +133,7 @@ def kgrid(args):
         extra_vars=args.extra_vars,
         psp_options=args.psp_options,
         energy_tolerance=args.energy_tolerance,
+        heterostructure=args.heterostructure,
     )
     kpt_conv.run(args.np)
     print("\nk-grid coverged: ", kpt_conv.success)
@@ -185,6 +191,7 @@ def encut(args):
         extra_vars=args.extra_vars,
         energy_tolerance=args.energy_tolerance,
         psp_options=args.psp_options,
+        heterostructure=args.heterostructure,
     )
 
     encut_conv.run(args.np)
@@ -263,6 +270,7 @@ def relax(args):
         pspdir=args.pspdir,
         max_calls=args.max_calls,
         extra_vars=args.extra_vars,
+        heterostructure=args.heterostructure,
         # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
@@ -322,6 +330,11 @@ if __name__ == "__main__":
             type=float,
             help="The energy difference required for convergence per atom",
         )
+        parser_kgrid.add_argument(
+            "-heterostructure",
+            help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
+            action="store_true",
+        )
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -355,6 +368,12 @@ if __name__ == "__main__":
             type=float,
             help="The energy difference required for convergence per atom",
         )
+        parser_encut.add_argument(
+            "-heterostructure",
+            help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
+            action="store_true",
+        )
+
         parser_encut.set_defaults(func=encut)
 
         # parser for both k-grid and encut
@@ -387,6 +406,12 @@ if __name__ == "__main__":
             type=float,
             help="The energy difference required for convergence per atom",
         )
+        parser_complete.add_argument(
+            "-heterostructure",
+            help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
+            action="store_true",
+        )
+
         parser_complete.set_defaults(func=complete)
 
         # parser for ionic relaxation
@@ -418,6 +443,11 @@ if __name__ == "__main__":
             help="Pseudopotential options. ",
             default=None,
             type=json.loads,
+        )
+        parser_relax.add_argument(
+            "-heterostructure",
+            help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
+            action="store_true",
         )
 
         # parser_relax.add_argument(
