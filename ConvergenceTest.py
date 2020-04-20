@@ -432,5 +432,5 @@ if __name__ == "__main__":
         args = parser.parse_args()
         args.func(args)
     else:
-        print("Usage: convergencetest.py [-h]")
+        print("Usage: ConvergenceTest.py [-h]")
         print("{kgrid, encut, complete, relax}")

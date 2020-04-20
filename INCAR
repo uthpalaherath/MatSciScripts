@@ -4,7 +4,8 @@
 #-------------------- STARTING PARAMETERS --------------------
 system   =  Default
 #ICHARG = 11
-GGA = PS
+#ISTART = 0
+#GGA = PS
 PREC      =  Accurate
 LREAL     = Auto
 ADDGRID   = .TRUE.
@@ -29,14 +30,21 @@ ENCUT     = 600
 EDIFF     =  1E-08
 NELM      =  100
 NELMIN    =  8
-IALGO = 38
+#IALGO = 38
 ALGO = Normal
 
 #-------------------- IONIC RELAXATION --------------------
 #EDIFFG = -1E-04
 #ISIF = 3
-#IBRION = 2 #CGA:2, Phonons:8
+#IBRION = 2 #NEB:1, CGA:2, Phonons:8
 #NSW = 100
+
+# Elastic Constants
+#ISIF = 3
+#IBRION = 6
+#NSW = 1
+#POTIM = 0.015
+#NFREE = 2
 
 #-------------------- DOS --------------------
 ISMEAR    = 2    # Metals:2, SC/Insulators:-5, 0, Bands:0
@@ -85,7 +93,10 @@ LOPTICS = .FALSE.
 #LUSE_VDW=.TRUE.
 #AGGAC = 0.0000
 
- #-------------------- NEB --------------------
- #LCLIMB = .TRUE.
- #ICHAIN = 0
- #IMAGES = 8
+#-------------------- NEB --------------------
+#LCLIMB = .TRUE.
+#ICHAIN = 0
+#IMAGES = 8 # Excluding end points
+#SPRINT = -5.0
+#LNEBCELL = .FALSE. # Requires ISIF = 3 and IOPT = 3
+#IOPT = 3
