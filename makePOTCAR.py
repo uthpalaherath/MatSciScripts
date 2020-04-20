@@ -18,7 +18,7 @@ $ makePOTCAR.py
         -pspdir {potpaw_PBE,potpaw_LDA}
         -psp_options '{"key" : "value"}'
         -poscar POSCAR_SrVO3
-
+        -heterostructure
 E.g.-
 
 $ makePOTCAR.py -pspdir potpaw_PBE -psp_options '{"Sr":"sv"}'
