@@ -326,7 +326,7 @@ if __name__ == "__main__":
         )
         parser_kgrid.add_argument(
             "-energy_tolerance",
-            default=1e-4,
+            default=1e-3,
             type=float,
             help="The energy difference required for convergence per atom",
         )
@@ -364,7 +364,7 @@ if __name__ == "__main__":
         )
         parser_encut.add_argument(
             "-energy_tolerance",
-            default=1e-4,
+            default=1e-3,
             type=float,
             help="The energy difference required for convergence per atom",
         )
@@ -402,7 +402,7 @@ if __name__ == "__main__":
         )
         parser_complete.add_argument(
             "-energy_tolerance",
-            default=1e-4,
+            default=1e-3,
             type=float,
             help="The energy difference required for convergence per atom",
         )
