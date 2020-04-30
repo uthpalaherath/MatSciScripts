@@ -97,6 +97,6 @@ LOPTICS = .FALSE.
 #LCLIMB = .TRUE.
 #ICHAIN = 0
 #IMAGES = 8 # Excluding end points
-#SPRINT = -5.0
+#SPRING = -5.0
 #LNEBCELL = .FALSE. # Requires ISIF = 3 and IOPT = 3
 #IOPT = 3
