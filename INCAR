@@ -21,7 +21,7 @@ LCHARG = .TRUE.
 
 #-------------------- PARALLELIZATION --------------------
 NCORE   = 1
-NSIM   = 1 
+NSIM   = 1
 #NPAR = 10
 KPAR = 4
 
@@ -68,13 +68,13 @@ LDAUPRINT =  2
 #VCA    =   0.30  0.70  1.00  1.00
 
 #-------------------- HF --------------------
-# LHFCALC = .FALSE.
-# TIME = 0.4
-# AEXX    = 1.0
-# ALDAC   = 0.0
-# AGGAC   = 0.0
-# PRECFOCK  = Normal  ! used PRECFOCK = Normal for high quality calculations
-# NKRED     = 2     ! omit flag for high quality calculations
+LHFCALC = .FALSE.
+TIME = 0.4
+AEXX    = 1.0
+ALDAC   = 0.0
+AGGAC   = 0.0
+PRECFOCK  = Normal  ! used PRECFOCK = Normal for high quality calculations
+NKRED     = 2     ! omit flag for high quality calculations
 
 #-------------------- WANNIER90 --------------------
 LWANNIER90 = .FALSE.
