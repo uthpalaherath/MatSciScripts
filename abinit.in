@@ -54,7 +54,9 @@ ecut 30            # KE cutoff in Hartree
 ecutsm 0.5         # Smoothing energy for lattice parameter optimization
 # tsmear 0.001
 ixc 11             # XC functional
+pawecutdg 40       # Energy cutoff for the fine FFT grid
 # nband 8
+
 
 #-------------------- SCF CALCULATION --------------------
 
