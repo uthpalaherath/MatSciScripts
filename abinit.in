@@ -1,0 +1,105 @@
+# Abinit input TEMPLATE
+# -Uthpala Herath
+
+# Note:
+# 1 Ha = 27.211 eV
+# 1 Bohr = 5.29E-11 m
+
+#-------------------- PARALLELIZATION  --------------------
+
+autoparal 4
+
+#-------------------- UNIT CELL --------------------
+
+chkprim 0
+acell 1 1 1 Angstrom
+
+rprim
+1.0 0.0 0.0
+0.0 1.0 0.0
+0.0 0.0 1.0
+
+#-------------------- ATOMIC STRUCTURE --------------------
+
+ntypat 3           # Types of real atoms
+znucl 57 25 8      # E.g.- La Mn O
+
+# Alchemical pseudopotentials for VCA
+# npsp 4             # Total number of pseudopotentials (Including ghost atoms if using VCA)
+# znucl 25 8 57 38   # If using VCA place ghost atoms last, E.g.- Mn O La Sr
+# ntypalch 1         # Number of alchemical pseudopotentials
+# mixalch 0.7 0.3    # Mixing based on znucl order
+
+# Atomic positions
+natom 5
+typat 1 2 3 3 3    # Order as in znucl
+xred
+0.25 0.25 0.25
+0.75 0.75 0.75
+0.25 0.25 0.25
+0.75 0.75 0.75
+0.25 0.25 0.25
+
+
+#-------------------- K-GRID --------------------
+
+kptopt 1           # K-point symmetry type
+ngkpt 8 8 8        # Monkhorst-Pack grid
+nshiftk 1
+shiftk 0.5 0.5 0.5 # Choice of origin
+
+#-------------------- PLANE WAVE BASIS SET --------------------
+
+ecut 30            # KE cutoff in Hartree
+ecutsm 0.5         # Smoothing energy for lattice parameter optimization
+# tsmear 0.001
+ixc 11             # XC functional
+# nband 8
+
+#-------------------- SCF CALCULATION --------------------
+
+diemac 9.0         # Model dielectric preconditioner
+nstep 50           # Maximum number of SCF iterations
+optforces 1        # Enforce calculation of forces at each SCF step
+
+# tolvrs 1.0d-18     # Tolerance on residual of the SCF potential (rec: structural opt)
+toldfe 1.0d-8     # Tolerance on difference of total energy (Ha)
+# toldff 1.0d-6      # Tolerance on difference of forces (Ha/Bohr)
+
+#-------------------- ATOMIC OPTIMIZATION --------------------
+
+# ionmov 2
+# optcell 0
+# ntime 10          # maximum number of ionic optimization steps
+# tolmxf 1.0d-6     # tolerance on the maximal force (Ha/Bohr)
+
+# constraints
+# natfix 2          # Fix positions of these atoms
+# iatfix 2 2
+
+#-------------------- ATOMIC + CELL OPTIMIZATION --------------------
+
+# # Note: Cell optimization should be followed by atomic optimization
+
+# # Multi dataset mode
+# ndtset 2
+# jdtset 1 2
+
+# # First perform atomic optimization
+# ionmov1 2
+# optcell1 0
+# ntime1 10          # Maximum number of ionic optimization steps
+# tolmxf1 1.0d-6     # Tolerance on the maximal force (Ha/Bohr)
+
+# # Get previous datasets
+# getwfk2 1          # Start with wave functions from dataset1
+# getxred2 1         # Start with relaxed coordinates from dataset 1
+
+# # Now perform cell optimization
+# dilatmx2 1.05       # Maximum scaling allowed for lattice parameters
+# ionmov2  2
+# optcell2 2
+# ntime2   12
+# tolmxf2 1.0d-6
+# strfact2 100        # Scales the stresses to compare with same tolmxf convergence test
+#                     # applied to the forces.
