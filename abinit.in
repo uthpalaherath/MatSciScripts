@@ -84,7 +84,7 @@ toldfe 1.0d-8     # Tolerance on difference of total energy (Ha)
 # # Note: Cell optimization should be followed by atomic optimization
 
 # # Multi dataset mode
-# ndtset 2
+# ndtset 2   # 5 for Elastic constants calculation
 # jdtset 1 2
 
 # # First perform atomic optimization
@@ -105,3 +105,43 @@ toldfe 1.0d-8     # Tolerance on difference of total energy (Ha)
 # tolmxf2 1.0d-6
 # strfact2 100        # Scales the stresses to compare with same tolmxf convergence test
 #                     # applied to the forces.
+
+#-------------------- ELASTIC CONSTANTS --------------------
+
+# # Note: Use the datasets from ATOMIC + CELL OPTIMIZATION.
+# #       Afterwards, perform a GS calculation with new xred and acell.
+# #       Next, do DDK WF calculation followed by RF calculation.
+
+# # GS calculation with new xred and acell (from dataset #2).
+
+# getcell3 2
+# getxred3 2
+
+# kptopt3 1
+# tolvrs3 1.0d-18
+
+# # Calculate the ddk wf's - needed for piezoelectric tensor and
+# # Born effective charges in the next dataset.
+
+#   getwfk4   3
+#     iscf4  -3        #this option is needed for ddk
+#   kptopt4   2        #use time-reversal symmetry only for k points
+#     nqpt4   1        #one wave vector will be specified
+#      qpt4   0 0 0    #need to specify gamma point
+#   rfelfd4   2        #set for ddk wf's only
+#    rfdir4   1 1 1    #full set of directions needed
+#   tolwfr4   1.0d-20  #only wf convergence can be monitored here
+
+
+# # Response-function calculations for all needed perturbations
+
+#   getddk5   4
+#   getwfk5   3
+#   kptopt5   2        #use time-reversal symmetry only for k points
+#     nqpt5   1
+#      qpt5   0 0 0
+#   rfphon5   1        #do atomic displacement perturbation
+#  rfatpol5   1 1      #do for all atoms
+#   rfstrs5   3        #do strain perturbation
+#    rfdir5   1 1 1    #the full set of directions is needed
+#   tolvrs5   1.0d-10  #need reasonable convergence of 1st-order quantities
