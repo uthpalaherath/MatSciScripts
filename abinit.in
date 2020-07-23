@@ -69,6 +69,7 @@ toldfe 1.0d-8     # Tolerance on difference of total energy (Ha)
 # toldff 1.0d-6      # Tolerance on difference of forces (Ha/Bohr)
 
 #-------------------- ATOMIC OPTIMIZATION --------------------
+# COMMENT OUT THIS SECTION IF DOING ATOMIC + CELL OPTIMIZATION.
 
 # ionmov 2
 # optcell 0
