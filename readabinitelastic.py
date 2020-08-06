@@ -22,5 +22,10 @@ elastic_tensor = ET2.reshape(6, 6)
 # in GPa
 elastic_tensor = elastic_tensor * 100
 
-for row in elastic_tensor:
-    print(" ".join(map(str, row)))
+row = elastic_tensor.shape[0]
+col = elastic_tensor.shape[1]
+for i in range(row):
+    for j in range(col):
+        print("{:>10.4f} ".format(elastic_tensor[i, j]), end=" ")
+        if j == (col - 1):
+            print(" ")
