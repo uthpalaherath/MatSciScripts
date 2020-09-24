@@ -20,8 +20,9 @@ from argparse import RawTextHelpFormatter
 import argparse
 import sys, subprocess, os
 import re
-from shutil import copyfile
+from shutil import copy,copyfile
 from itertools import groupby
+import numpy as np
 
 import Struct
 import VASP
@@ -64,7 +65,6 @@ class ElectronOccupation:
             self.fdf_to_poscar()
 
         self.dft_run()
-        self.read_num_wann()
         self.postw90_run()
         self.calculator()
 
@@ -155,7 +155,7 @@ class ElectronOccupation:
                 self.DFT.NBANDS = int(
                     re.findall(r"\n\s*NBANDS\s*=\s*([\d\s]*)", data)[0]
                 )
-                print ("Number of bands read from INCAR = %d " % self.DFT.NBANDS)
+                print ("\nNumber of bands read from INCAR = %d " % self.DFT.NBANDS)
 
             elif self.dft == "siesta":
                 fi = open(self.structurename + ".fdf", "r")
@@ -166,7 +166,7 @@ class ElectronOccupation:
                         0
                     ].split()[-1]
                 )
-                print ("Number of bands read from .fdf = %d " % self.DFT.NBANDS)
+                print ("\nNumber of bands read from .fdf = %d " % self.DFT.NBANDS)
 
         except:
             self.DFT.NBANDS = 100
@@ -253,6 +253,9 @@ class ElectronOccupation:
             f.write("end kpoints")
             f.close()
             print ("wannier90.win generated.")
+
+        # Call read_num_wann() to store self.num_wann
+        self.read_num_wann()
 
     def read_num_wann(self):
         """This reads the number of wannier bands from the generatied wannier.win
@@ -350,7 +353,7 @@ class ElectronOccupation:
         elif self.dft == "siesta":
             if not self.nowin:
                 self.gen_win()
-                shutil.copy("wannier90.win", self.structurename + ".win")
+                copy("wannier90.win", self.structurename + ".win")
             else:
                 self.updatewanbands = False
 
@@ -361,10 +364,7 @@ class ElectronOccupation:
             print ("Running Siesta ...")
             self.siesta_exec = "siesta"
             cmd = (
-                "cd "
-                + dir
-                + " && "
-                + " mpirun -np "
+                "mpirun -np "
                 + str(self.np)
                 + " "
                 + self.siesta_exec
@@ -396,18 +396,18 @@ class ElectronOccupation:
                 sys.exit()
 
             # need to rename .eigW to .eig to run wannier90
-            shutil.copy(self.structurename + ".eigW", self.structurename + ".eig")
+            copy(self.structurename + ".eigW", self.structurename + ".eig")
 
             if not self.nowin:
                 self.update_win()
-                shutil.copy("wannier90.win", self.structurename + ".win")
+                copy("wannier90.win", self.structurename + ".win")
             self.run_wan90(self.structurename)
 
             # renaming files
-            shutil.copy(self.structurename + ".eig", "wannier90.eig")
-            shutil.copy(self.structurename + ".chk", "wannier90.chk")
-            shutil.copy(self.structurename + ".win", "wannier90.win")
-            shutil.copy(self.structurename + ".amn", "wannier90.amn")
+            copy(self.structurename + ".eig", "wannier90.eig")
+            copy(self.structurename + ".chk", "wannier90.chk")
+            copy(self.structurename + ".win", "wannier90.win")
+            copy(self.structurename + ".amn", "wannier90.amn")
 
     def run_wan90_pp(self):
         """
@@ -429,7 +429,7 @@ class ElectronOccupation:
         Running wannier90.x to generate .chk file.
         """
 
-        print ("Running wannier90.x ...")
+        print ("\nRunning wannier90.x ...")
         cmd = "mpirun -np" + " " + str(self.np) + " " + "wannier90.x" + " " + filename
         out, err = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -497,7 +497,7 @@ class ElectronOccupation:
             print i + 1, ":", self.Integration(dos[:speI, :])
 
             occ = self.Integration(dos[:speI, :]) + occ
-        print ("occupancy is: ", occ)
+        print ("Total electron occupancy in Wannier manifold : %s" %occ)
 
 
 if __name__ == "__main__":
