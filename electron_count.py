@@ -1,19 +1,25 @@
+#!/usr/bin/env python
+
 """ Wannier Manifold Electron Occupation Calculater.
 
-This is an extension to the original code developed by Xingu in Dr. Park's
-group.
+This is an extension to the original code developed by Xingyu Liao in Dr. Park's
+group at UIC.
 It calculates the total number of electrons in the Wannier manifold.
 This is a requirement to know to perform DMFT calculations.
+
+This requires that the DMFTwDFT/bin directory is added to $PYTHONPATH.
+
+- Uthpala Herath
 
 """
 
 
 from scipy import *
-import os.path
 from os import path
 from argparse import RawTextHelpFormatter
 import argparse
 import sys, subprocess, os
+import re
 
 import Struct
 import VASP
@@ -27,8 +33,11 @@ class ElectronOccupation:
     def __init__(self, args):
 
         self.dft = args.dft
+        self.np = args.np
+
 
         # import the VASP class. This can be used for other DFT codes as well.
+        self.create_DFTmu()
         self.DFT = VASP.VASP_class(dft=self.dft)
 
         # Initial guess for Fermi energy
@@ -50,6 +59,20 @@ class ElectronOccupation:
         self.run_wan90()
         self.postw90_run()
         self.calculator()
+
+    def create_DFTmu(self):
+        """
+        This function creates a DFT_mu.out with an initial
+        guess for the chemical potential. It will be updated once
+        the DFT calculation is finished.
+        """
+        mu = 7.0
+
+        if os.path.exists("DFT_mu.out"):
+            os.remove("DFT_mu.out")
+        f = open("DFT_mu.out", "w")
+        f.write("%f" % mu)
+        f.close()
 
     def gen_win(self):
         """
@@ -142,8 +165,8 @@ class ElectronOccupation:
         # Update wannier90.win file with the dos block.
         f = open("wannier90.win", "a")
         f.write("\ndos=true")
-        f.write("dos_kmesh=%s" % self.dos_kmesh)
-        f.write("dos_project=%s" % self.num_wann)
+        f.write("\ndos_kmesh=%s" % self.dos_kmesh)
+        f.write("\ndos_project=%s" % self.num_wann)
         f.close()
 
         print ("wannier90.win updated.")
@@ -167,21 +190,21 @@ class ElectronOccupation:
             # initial VASP run
             print ("Running VASP...")
             self.vasp_exec = "vasp_std"
-            cmd = self.np + " " + self.vasp_exec  # + " > dft.out 2> dft.error"
+            cmd = "mpirun -np "+str(self.np) + " " + self.vasp_exec  # + " > dft.out 2> dft.error"
             out, err = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ).communicate()
             if err:
                 print ("DFT calculation failed! Check dft.error for details.\n")
-                errdir = dir + os.sep + "dft.error"
+                errdir = "dft.error"
                 f = open(errdir, "wb")
                 f.write(err)
                 f.close()
                 sys.exit()
             else:
                 print ("DFT calculation complete.\n")
-                outdir = dir + os.sep + "dft.out"
-                f = open(outdir, "wb"
+                outdir = "dft.out"
+                f = open(outdir, "wb")
                 f.write(out)
                 f.close()
 
@@ -191,7 +214,7 @@ class ElectronOccupation:
         """
 
         print ("Running wannier90.x ...")
-        cmd = "mpirun -np" + " " + self.np + " " + "wannier90.x" + " " + filename
+        cmd = "mpirun -np" + " " + str(self.np) + " " + "wannier90.x" + " " + filename
         out, err = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         ).communicate()
@@ -204,7 +227,7 @@ class ElectronOccupation:
             print (out.decode("utf-8"))
 
     def postw90_run(self):
-        NUM_OF_ORBT = self.num_wann()  ## NUMBER OF WANNIER BAND
+        NUM_OF_ORBT = int(self.num_wann)  ## NUMBER OF WANNIER BAND
         LINE_dos = self.dos_project_line  ### LINENUMBER WHICH DEFINE THE dos_project
         for i in range(NUM_OF_ORBT):
             print i + 1, "th iteration is running"
@@ -217,7 +240,7 @@ class ElectronOccupation:
                 fi.write(winline)
             fi.close()
             print "postw90 is running"
-            cmd = "mpirun -np " + self.np + " postw90.x wannier90"
+            cmd = "mpirun -np " + str(self.np) + " postw90.x wannier90"
             out, err = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ).communicate()
