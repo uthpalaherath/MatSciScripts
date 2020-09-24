@@ -497,7 +497,7 @@ class ElectronOccupation:
                 if ele[0] > sepE:
                     speI = j
                     break
-            print i + 1, ":", self.Integration(dos[:speI, :])
+            print ("%s : %s " % ((i + 1), self.Integration(dos[:speI, :])))
 
             occ = self.Integration(dos[:speI, :]) + occ
         print ("Total electron occupancy in Wannier manifold : %s" % occ)
