@@ -156,7 +156,7 @@ class ElectronOccupation:
                 self.DFT.NBANDS = int(
                     re.findall(r"\n\s*NBANDS\s*=\s*([\d\s]*)", data)[0]
                 )
-                print ("\nNumber of bands read from INCAR = %d " % self.DFT.NBANDS)
+                print("\nNumber of bands read from INCAR = %d " % self.DFT.NBANDS)
 
             elif self.dft == "siesta":
                 fi = open(self.structurename + ".fdf", "r")
@@ -167,11 +167,11 @@ class ElectronOccupation:
                         0
                     ].split()[-1]
                 )
-                print ("\nNumber of bands read from .fdf = %d " % self.DFT.NBANDS)
+                print("\nNumber of bands read from .fdf = %d " % self.DFT.NBANDS)
 
         except:
             self.DFT.NBANDS = 100
-            print ("WARNING: Number of bands not set in DFT input file!")
+            print("WARNING: Number of bands not set in DFT input file!")
 
         # Setting num_bands in .win file.
         # If set to False num_bands is set to number of DFT bands.
@@ -251,13 +251,13 @@ class ElectronOccupation:
             ).communicate()
             f.write(out.decode("utf-8"))
             if err:
-                print (err.decode("utf-8"))
+                print(err.decode("utf-8"))
             f.write("end kpoints")
             f.close()
 
         # Call read_num_wann() to store self.num_wann
         self.read_num_wann()
-        print ("wannier90.win generated.\n")
+        print("wannier90.win generated.\n")
 
     def read_num_wann(self):
         """This reads the number of wannier bands from the generatied wannier.win
@@ -270,7 +270,7 @@ class ElectronOccupation:
         for line in data:
             if re.match("num_wann", line):
                 self.num_wann = line.split()[-1]
-        print ("Number of Wannier functions = %s" % self.num_wann)
+        print("Number of Wannier functions = %s" % self.num_wann)
 
     def update_win(self):
         """
@@ -302,7 +302,7 @@ class ElectronOccupation:
         f.write("\ndos_project=%s" % self.num_wann)
         f.close()
 
-        print ("wannier90.win updated.")
+        print("wannier90.win updated.")
 
         # find line number of dis_project in wannier90.win.
         fi = open("wannier90.win", "r")
@@ -326,7 +326,7 @@ class ElectronOccupation:
                 self.updatewanbands = False
 
             # initial VASP run
-            print ("Running VASP...")
+            print("Running VASP...")
             self.vasp_exec = "vasp_std"
             cmd = (
                 "mpirun -np " + str(self.np) + " " + self.vasp_exec
@@ -335,14 +335,14 @@ class ElectronOccupation:
                 cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ).communicate()
             if err:
-                print ("DFT calculation failed! Check dft.error for details.\n")
+                print("DFT calculation failed! Check dft.error for details.\n")
                 errdir = "dft.error"
                 f = open(errdir, "wb")
                 f.write(err)
                 f.close()
                 sys.exit()
             else:
-                print ("DFT calculation complete.\n")
+                print("DFT calculation complete.\n")
                 outdir = "dft.out"
                 f = open(outdir, "wb")
                 f.write(out)
@@ -364,7 +364,7 @@ class ElectronOccupation:
             self.run_wan90_pp()
 
             # Running siesta
-            print ("Running Siesta ...")
+            print("Running Siesta ...")
             self.siesta_exec = "siesta"
             cmd = (
                 "mpirun -np "
@@ -388,14 +388,14 @@ class ElectronOccupation:
                 fi.close()
 
                 if done_word.split()[0] == "Job":
-                    print ("DFT calculation complete.\n")
+                    print("DFT calculation complete.\n")
 
                 else:
-                    print ("DFT calculation failed!\n")
+                    print("DFT calculation failed!\n")
                     sys.exit()
 
             else:
-                print ("DFT calculation failed!\n")
+                print("DFT calculation failed!\n")
                 sys.exit()
 
             # need to rename .eigW to .eig to run wannier90
@@ -422,34 +422,34 @@ class ElectronOccupation:
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         ).communicate()
         if err:
-            print (err.decode("utf-8"))
+            print(err.decode("utf-8"))
             sys.exit()
         else:
-            print (out.decode("utf-8"))
+            print(out.decode("utf-8"))
 
     def run_wan90(self, filename="wannier90"):
         """
         Running wannier90.x to generate .chk file.
         """
 
-        print ("\nRunning wannier90.x ...")
+        print("\nRunning wannier90.x ...")
         cmd = "mpirun -np" + " " + str(self.np) + " " + "wannier90.x" + " " + filename
         out, err = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         ).communicate()
         if err:
-            print ("wannier90 calculation failed!")
-            print (err.decode("utf-8"))
+            print("wannier90 calculation failed!")
+            print(err.decode("utf-8"))
             sys.exit()
         else:
-            print ("wannier90 calculation complete.")
-            print (out.decode("utf-8"))
+            print("wannier90 calculation complete.")
+            print(out.decode("utf-8"))
 
     def postw90_run(self):
         NUM_OF_ORBT = int(self.num_wann)  ## NUMBER OF WANNIER BAND
         LINE_dos = self.dos_project_line  ### LINENUMBER WHICH DEFINE THE dos_project
         for i in range(NUM_OF_ORBT):
-            print i + 1, "th iteration is running"
+            print("%s th iteration is running" % (i + 1))
             fi = open("wannier90.win", "r")
             WIN = array(fi.readlines())
             fi.close()
@@ -458,13 +458,13 @@ class ElectronOccupation:
             for j, winline in enumerate(WIN):
                 fi.write(winline)
             fi.close()
-            print "postw90 is running"
+            print("postw90 is running")
             cmd = "mpirun -np " + str(self.np) + " postw90.x wannier90"
             out, err = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ).communicate()
             os.system("cp wannier90-dos.dat bands_plot/dos" + str(i + 1))
-            print "-------------------------------------------------"
+            print("-------------------------------------------------")
 
     def Load_DOS(self, filename, Fermi):
         fi = open(filename, "r")
@@ -488,7 +488,7 @@ class ElectronOccupation:
         occ = 0.0
         for i in range(int(self.num_wann)):
             if not path.exists("./bands_plot/dos" + str(i + 1)):
-                print ("File does not exist!")
+                print("File does not exist!")
                 exit()
             sepE = 0
             speI = 0
@@ -497,10 +497,10 @@ class ElectronOccupation:
                 if ele[0] > sepE:
                     speI = j
                     break
-            print ("%s : %s " % ((i + 1), self.Integration(dos[:speI, :])))
+            print("%s : %s " % ((i + 1), self.Integration(dos[:speI, :])))
 
             occ = self.Integration(dos[:speI, :]) + occ
-        print ("Total electron occupancy in Wannier manifold : %s" % occ)
+        print("Total electron occupancy in Wannier manifold : %s" % occ)
 
 
 if __name__ == "__main__":
@@ -541,4 +541,4 @@ if __name__ == "__main__":
         ElectronOccupation(args)
 
     else:
-        print ("Usage: electron_count.py -h")
+        print("Usage: electron_count.py -h")
