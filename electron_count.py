@@ -20,7 +20,7 @@ from argparse import RawTextHelpFormatter
 import argparse
 import sys, subprocess, os
 import re
-from shutil import copy,copyfile
+from shutil import copy, copyfile
 from itertools import groupby
 import numpy as np
 
@@ -55,6 +55,7 @@ class ElectronOccupation:
         # Wannier parameters
         self.kmeshtol = 1e-06
         self.dos_kmesh = 64
+        self.num_iter = 500
 
         # create bands_plot directory
         if not os.path.exists("bands_plot"):
@@ -194,6 +195,7 @@ class ElectronOccupation:
             self.DFT.EFERMI + p["ewin"][0],
             self.DFT.EFERMI + p["ewin"][1],
             self.kmeshtol,
+            self.num_iter,
         )
 
         # If exclude_bands are to be included in the .win file.
@@ -497,7 +499,7 @@ class ElectronOccupation:
             print i + 1, ":", self.Integration(dos[:speI, :])
 
             occ = self.Integration(dos[:speI, :]) + occ
-        print ("Total electron occupancy in Wannier manifold : %s" %occ)
+        print ("Total electron occupancy in Wannier manifold : %s" % occ)
 
 
 if __name__ == "__main__":
