@@ -267,7 +267,7 @@ class ElectronOccupation:
 
     def calculator(self):
         occ = 0.0
-        for i in range(self.num_wann):
+        for i in range(int(self.num_wann)):
             if not path.exists("dos" + str(i + 1)):
                 print ("File does not exist!")
                 exit()
