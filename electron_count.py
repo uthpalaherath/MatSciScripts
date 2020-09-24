@@ -257,7 +257,7 @@ class ElectronOccupation:
 
         # Call read_num_wann() to store self.num_wann
         self.read_num_wann()
-        print ("wannier90.win generated.")
+        print ("wannier90.win generated.\n")
 
     def read_num_wann(self):
         """This reads the number of wannier bands from the generatied wannier.win
