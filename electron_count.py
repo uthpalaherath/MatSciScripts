@@ -270,6 +270,7 @@ class ElectronOccupation:
         for line in data:
             if re.match("num_wann", line):
                 self.num_wann = line.split()[-1]
+        print ("Number of Wannier functions : %s" % self.num_wann)
 
     def update_win(self):
         """
