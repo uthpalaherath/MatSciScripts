@@ -254,10 +254,10 @@ class ElectronOccupation:
                 print (err.decode("utf-8"))
             f.write("end kpoints")
             f.close()
-            print ("wannier90.win generated.")
 
         # Call read_num_wann() to store self.num_wann
         self.read_num_wann()
+        print ("wannier90.win generated.")
 
     def read_num_wann(self):
         """This reads the number of wannier bands from the generatied wannier.win
@@ -270,7 +270,7 @@ class ElectronOccupation:
         for line in data:
             if re.match("num_wann", line):
                 self.num_wann = line.split()[-1]
-        print ("Number of Wannier functions : %s" % self.num_wann)
+        print ("Number of Wannier functions = %s" % self.num_wann)
 
     def update_win(self):
         """
