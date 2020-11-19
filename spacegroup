@@ -15,7 +15,15 @@ $ spacegroup
 
 """
 import pychemia
+import sys
 
-st = pychemia.code.vasp.read_poscar("POSCAR")
+args = sys.argv[1:]
+
+if args:
+    poscar = sys.argv[1]
+else:
+    poscar = "POSCAR"
+
+st = pychemia.code.vasp.read_poscar(poscar)
 cs = pychemia.crystal.CrystalSymmetry(st)
 print(cs.get_spacegroup())
