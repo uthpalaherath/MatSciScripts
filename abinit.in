@@ -3,7 +3,14 @@
 
 # Note:
 # 1 Ha = 27.211 eV
-# 1 Bohr = 5.29E-11 m
+# 1 Bohr = 5.29E-11 m = 0.529177 Å
+
+#-------------------- DIRECTORIES  --------------------
+
+output_file = "Si.out"
+pp_dirpath "~/local/abinit/pseudo-dojo/paw_pbe_standard/"
+pseudos "Si.xml"
+
 
 #-------------------- PARALLELIZATION  --------------------
 
@@ -40,13 +47,21 @@ xred
 0.75 0.75 0.75
 0.25 0.25 0.25
 
+#----------------------- SPIN -----------------------
 
-#-------------------- K-GRID --------------------
+# nsppol 1
+# nspinor 1
 
-kptopt 1           # K-point symmetry type
-ngkpt 8 8 8        # Monkhorst-Pack grid
-nshiftk 1
-shiftk 0.5 0.5 0.5 # Choice of origin
+# Spin-orbit coupling
+# so_psp 0
+
+# Spin for each atom
+# spinat
+# 0.0 0.0 1.0
+# 0.0 0.0 1.0
+# 0.0 0.0 -1.0
+# 0.0 0.0 1.0
+# 0.0 0.0 -1.0
 
 #-------------------- PLANE WAVE BASIS SET --------------------
 
@@ -55,10 +70,19 @@ ecutsm 0.5         # Smoothing energy for lattice parameter optimization
 # tsmear 0.001
 ixc 11             # XC functional
 pawecutdg 40       # Energy cutoff for the fine FFT grid
-# nband 8
+
+#-------------------- K-GRID --------------------
+# COMMENT IF CALCULATING BANDSTRUCTURE
+
+chksymbreak 0      # Check k-point symmetry breaking
+kptopt 1           # K-point symmetry type
+ngkpt 8 8 8        # Monkhorst-Pack grid
+nshiftk 1
+shiftk 0.5 0.5 0.5 # Choice of origin
 
 
 #-------------------- SCF CALCULATION --------------------
+# COMMENT IF CALCULATING BANDSTRUCTURE
 
 diemac 9.0         # Model dielectric preconditioner
 nstep 50           # Maximum number of SCF iterations
@@ -67,6 +91,53 @@ optforces 1        # Enforce calculation of forces at each SCF step
 # tolvrs 1.0d-18     # Tolerance on residual of the SCF potential (rec: structural opt)
 toldfe 1.0d-8     # Tolerance on difference of total energy (Ha)
 # toldff 1.0d-6      # Tolerance on difference of forces (Ha/Bohr)
+nband 10           # Number of bands
+
+#-------------------- BANDSTRUCTURE --------------------
+# UNCOMMENT THIS SECTION AND COMMENT K-GRID, SCF SECTIONS.
+
+ndtset 2
+jdtset 1 2
+
+diemac 9.0
+nstep 50
+optforces 1
+nband 15
+chksymbreak 0      # Check k-point symmetry breaking
+enunit    1        # Energy eigenvalues in eV
+
+
+# DATASET 1 : SCF CALCULATION
+kptopt1 1           # K-point symmetry type
+ngkpt1 8 8 8        # Monkhorst-Pack grid
+nshiftk1 1
+shiftk1 0.5 0.5 0.5 # Choice of origin
+
+prtden1 1           # Print the density, for use by dataset 2
+toldfe1 1.0d-6      # Tolerance on difference of total energy (Ha)
+
+# DATASET 2 : NSCF CALCULATION (BANDSTRUCTURE)
+iscf2      -2
+getden2     1
+tolwfr2     1.0d-12
+
+kptopt2     -5          # -1 x Number of segments (#HSP-1)
+kptbounds2  0.0 0.0 0.0 #Gamma
+            0.0 1/2 1/2 #X
+            1/4 1/2 3/4 #W
+            1/2 1/2 1/2 #L
+            0.0 0.0 0.0 #Gamma
+            3/8 3/8 3/4 #K
+
+#ndivk2     4*40 39 # divisions of segments OR
+ndivsm2    10 # divisions of the smallest of the segment
+
+# OUTPUTS
+prtprocar2 1        # Print PROCAR
+prtdos2    3        # Print DOS
+prtdosm2   1        # Print DOS with m decomposition
+prtebands2 2        # output gnuplot files
+
 
 #-------------------- ATOMIC OPTIMIZATION --------------------
 # COMMENT OUT THIS SECTION IF DOING ATOMIC + CELL OPTIMIZATION.
