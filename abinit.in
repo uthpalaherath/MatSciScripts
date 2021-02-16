@@ -129,8 +129,8 @@ kptbounds2  0.0 0.0 0.0 #Gamma
             0.0 0.0 0.0 #Gamma
             3/8 3/8 3/4 #K
 
-#ndivk2     4*40 39 # divisions of segments OR
-ndivsm2    10 # divisions of the smallest of the segment
+ndivk2     4*40 39 # divisions of segments OR
+#ndivsm2    10 # divisions of the smallest of the segment
 
 # OUTPUTS
 prtprocar2 1        # Print PROCAR

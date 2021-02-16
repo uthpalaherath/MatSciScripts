@@ -33,10 +33,10 @@ NELMIN    =  8
 #IALGO = 38
 ALGO = Normal
 
-#-------------------- IONIC RELAXATION --------------------
+#-------------------- IONIC/CELL RELAXATION --------------------
 #EDIFFG = -1E-04
-#ISIF = 3
-#IBRION = 2 #NEB:1, CGA:2, Phonons:8
+#ISIF = 3 # 2:ions, 7:cell
+#IBRION = 2 # CGA:2, Phonons:8
 #NSW = 100
 
 # Elastic Constants
@@ -99,4 +99,11 @@ LOPTICS = .FALSE.
 #IMAGES = 8 # Excluding end points
 #SPRING = -5.0
 #LNEBCELL = .FALSE. # Requires ISIF = 3 and IOPT = 3
-#IOPT = 3
+
+## Force optimizer
+#IBRION = 3 # Disable VASP defaults
+#POTIM = 0  # Disable VASP defaults
+#IOPT = 3 # 3:quick min, 7:FIRE
+#NSW = 100
+#ISIF = 0
+#LSCALAPACK = .FALSE.
