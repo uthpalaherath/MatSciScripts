@@ -271,6 +271,7 @@ def relax(args):
         max_calls=args.max_calls,
         extra_vars=args.extra_vars,
         heterostructure=args.heterostructure,
+        relax_cell=args.relax_cell
         # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
@@ -301,7 +302,10 @@ if __name__ == "__main__":
         # parser for k-grid
         parser_kgrid = subparsers.add_parser("kgrid", help="k-grid convergence")
         parser_kgrid.add_argument(
-            "-np", default=1, type=int, help="Number of processors",
+            "-np",
+            default=1,
+            type=int,
+            help="Number of processors",
         )
         parser_kgrid.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
@@ -341,7 +345,10 @@ if __name__ == "__main__":
         # parser for encut
         parser_encut = subparsers.add_parser("encut", help="Energy cut-off convergence")
         parser_encut.add_argument(
-            "-np", default=1, type=int, help="Number of processors",
+            "-np",
+            default=1,
+            type=int,
+            help="Number of processors",
         )
         parser_encut.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
@@ -354,7 +361,9 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_encut.add_argument(
-            "-update", help="Update INCAR with new ENCUT?", action="store_true",
+            "-update",
+            help="Update INCAR with new ENCUT?",
+            action="store_true",
         )
         parser_encut.add_argument(
             "-psp_options",
@@ -379,7 +388,10 @@ if __name__ == "__main__":
         # parser for both k-grid and encut
         parser_complete = subparsers.add_parser("complete", help="Complete convergence")
         parser_complete.add_argument(
-            "-np", default=1, type=int, help="Number of processors",
+            "-np",
+            default=1,
+            type=int,
+            help="Number of processors",
         )
         parser_complete.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
@@ -392,7 +404,9 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_complete.add_argument(
-            "-update", help="Update INCAR and KPOINTS?", action="store_true",
+            "-update",
+            help="Update INCAR and KPOINTS?",
+            action="store_true",
         )
         parser_complete.add_argument(
             "-psp_options",
@@ -417,7 +431,10 @@ if __name__ == "__main__":
         # parser for ionic relaxation
         parser_relax = subparsers.add_parser("relax", help="Ionic relaxation")
         parser_relax.add_argument(
-            "-np", default=1, type=int, help="Number of processors",
+            "-np",
+            default=1,
+            type=int,
+            help="Number of processors",
         )
         parser_relax.add_argument(
             "-extra_vars", default=None, type=json.loads, help="Extra INCAR parameters."
@@ -430,7 +447,10 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_relax.add_argument(
-            "-target_forces", default=1e-4, type=float, help="Target force difference",
+            "-target_forces",
+            default=1e-4,
+            type=float,
+            help="Target force difference",
         )
         parser_relax.add_argument(
             "-max_calls",
@@ -447,6 +467,11 @@ if __name__ == "__main__":
         parser_relax.add_argument(
             "-heterostructure",
             help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
+            action="store_true",
+        )
+        parser_relax.add_argument(
+            "-relax_cell",
+            help="Optimize cell parameters as well.",
             action="store_true",
         )
 
