@@ -100,10 +100,11 @@ LOPTICS = .FALSE.
 #SPRING = -5.0
 #LNEBCELL = .FALSE. # Requires ISIF = 3 and IOPT = 3
 
-## Force optimizer
+## Force optimizer (Set vasp to do Damped MD with 0 time steps trigger NEB optimization)
+#EDIFFG=-0.05
 #IBRION = 3 # Disable VASP defaults
 #POTIM = 0  # Disable VASP defaults
 #IOPT = 3 # 3:quick min, 7:FIRE
-#NSW = 100
+#NSW = 1000
 #ISIF = 0
 #LSCALAPACK = .FALSE.

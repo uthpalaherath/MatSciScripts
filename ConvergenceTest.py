@@ -25,6 +25,7 @@ $ ConvergenceTest.py {kgrid,encut,complete,relax}
                     -update
                     -psp_options '{"key" : "value"}'
                     -heterostructure
+                    -incar INCAR
 
 
 E.g.-
@@ -51,6 +52,7 @@ import sys
 from argparse import RawTextHelpFormatter
 
 import pychemia
+from pychemia.code.vasp import incar
 
 
 def restore(restore_kpoints=False, restore_incar=False):
@@ -125,12 +127,18 @@ def kgrid(args):
     st = load_poscar()
     backup("kgrid")
 
+    if args.incar is None:
+        extra_vars = args.extra_vars
+    else:
+        in_obj = incar.read_incar(args.incar)
+        extra_vars = in_obj.variables
+
     kpt_conv = pychemia.code.vasp.task.ConvergenceKPointGrid(
         structure=st,
         workdir=".",
         executable="vasp_std",
         pspdir=args.pspdir,
-        extra_vars=args.extra_vars,
+        extra_vars=extra_vars,
         psp_options=args.psp_options,
         energy_tolerance=args.energy_tolerance,
         heterostructure=args.heterostructure,
@@ -183,12 +191,18 @@ def encut(args):
     st = load_poscar()
     backup("encut")
 
+    if args.incar is None:
+        extra_vars = args.extra_vars
+    else:
+        in_obj = incar.read_incar(args.incar)
+        extra_vars = in_obj.variables
+
     encut_conv = pychemia.code.vasp.task.ConvergenceCutOffEnergy(
         structure=st,
         workdir=".",
         executable="vasp_std",
         pspdir=args.pspdir,
-        extra_vars=args.extra_vars,
+        extra_vars=extra_vars,
         energy_tolerance=args.energy_tolerance,
         psp_options=args.psp_options,
         heterostructure=args.heterostructure,
@@ -258,6 +272,12 @@ def relax(args):
     fi.close()
     gridline = [int(x) for x in gridline.split()]
 
+    if args.incar is None:
+        extra_vars = args.extra_vars
+    else:
+        in_obj = incar.read_incar(args.incar)
+        extra_vars = in_obj.variables
+
     st = load_poscar()
     backup("relax")
     relax_st = pychemia.code.vasp.task.IonRelaxation(
@@ -269,9 +289,10 @@ def relax(args):
         kp_grid=gridline,
         pspdir=args.pspdir,
         max_calls=args.max_calls,
-        extra_vars=args.extra_vars,
+        extra_vars=extra_vars,
         heterostructure=args.heterostructure,
-        relax_cell=args.relax_cell
+        relax_cell=args.relax_cell,
+        psp_options=args.psp_options
         # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
@@ -339,6 +360,12 @@ if __name__ == "__main__":
             help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
             action="store_true",
         )
+        parser_kgrid.add_argument(
+            "-incar",
+            default=None,
+            type=str,
+            help="INCAR file name. If not provided will be generated automatically.",
+        )
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -382,6 +409,12 @@ if __name__ == "__main__":
             help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
             action="store_true",
         )
+        parser_encut.add_argument(
+            "-incar",
+            default=None,
+            type=str,
+            help="INCAR file name. If not provided will be generated automatically.",
+        )
 
         parser_encut.set_defaults(func=encut)
 
@@ -424,6 +457,12 @@ if __name__ == "__main__":
             "-heterostructure",
             help="Keep repeating order of atoms in POSCAR for POTCAR generation?",
             action="store_true",
+        )
+        parser_complete.add_argument(
+            "-incar",
+            default=None,
+            type=str,
+            help="INCAR file name. If not provided will be generated automatically.",
         )
 
         parser_complete.set_defaults(func=complete)
@@ -473,6 +512,12 @@ if __name__ == "__main__":
             "-relax_cell",
             help="Optimize cell parameters as well.",
             action="store_true",
+        )
+        parser_relax.add_argument(
+            "-incar",
+            default=None,
+            type=str,
+            help="INCAR file name. If not provided will be generated automatically.",
         )
 
         # parser_relax.add_argument(
