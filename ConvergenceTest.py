@@ -16,13 +16,14 @@ automatically be read for the ionic relaxation.
 For keeping the repeating order in POSCAR when generating POTCARs
 use -heterostructure flag.
 
+WARNING: INCAR and KPOINTS will be overwritten. Remember to backup originals.
+
 Usage:
 
 $ ConvergenceTest.py {kgrid,encut,complete,relax}
                     -np <number of processors>
                     -extra_vars '{"key" : "value"}'
                     -pspdir {potpaw_PBE,potpaw_LDA}
-                    -update
                     -psp_options '{"key" : "value"}'
                     -heterostructure
                     -incar INCAR
@@ -34,7 +35,6 @@ $ ConvergenceTest.py encut
                     -np 16
                     -extra_vars '{"NCORE" : "2", "ISPIN" : "1"}'
                     -pspdir potpaw_PBE
-                    -update
                     -psp_options '{"Sr":"sv"}'
 
 $ ConvergenceTest.py relax
@@ -55,62 +55,6 @@ import pychemia
 from pychemia.code.vasp import incar
 
 
-def restore(restore_kpoints=False, restore_incar=False):
-    """
-    Restores created backups of INCAR, KPOINTS and POSCAR.
-    """
-
-    if restore_kpoints:
-        if os.path.exists("KPOINTS.bak"):
-            shutil.copy("KPOINTS.bak", "KPOINTS")
-        else:
-            print(
-                "KPOINTS.bak not found! KPOINTS was probably generated with PyChemia. "
-            )
-    if restore_incar:
-        if os.path.exists("INCAR.bak"):
-            shutil.copy("INCAR.bak", "INCAR")
-        else:
-            print("INCAR.bak not found! INCAR was probably generated with PyChemia. ")
-
-
-def backup(type):
-    """
-    Creates backups of INCAR, KPOINTS and POSCAR.
-    """
-    if type == "kgrid":
-        if os.path.exists("KPOINTS"):
-            shutil.copy("KPOINTS", "KPOINTS.bak")
-        else:
-            print("KPOINTS not found! Generating with PyChemia.")
-        if os.path.exists("INCAR"):
-            shutil.copy("INCAR", "INCAR.bak")
-        else:
-            print("INCAR not found! Generating with PyChemia.")
-
-    elif type == "encut":
-        if os.path.exists("INCAR"):
-            shutil.copy("INCAR", "INCAR.bak")
-        else:
-            print("INCAR not found! Generating with PyChemia.")
-        if os.path.exists("KPOINTS"):
-            shutil.copy("KPOINTS", "KPOINTS.bak")
-        else:
-            print("KPOINTS not found! Generating with PyChemia.")
-
-    elif type == "relax":
-        if os.path.exists("POSCAR"):
-            shutil.copy("POSCAR", "initial_POSCAR")
-        else:
-            print("POSCAR not found!")
-            sys.exit()
-
-        if os.path.exists("INCAR"):
-            shutil.copy("INCAR", "initial_INCAR")
-        else:
-            print("INCAR not found! Generating with PyChemia.")
-
-
 def load_poscar():
     """
     Returns the structure retrieved from POSCAR.
@@ -125,7 +69,6 @@ def kgrid(args):
 
     print("\nRunning k-grid convergence...")
     st = load_poscar()
-    backup("kgrid")
 
     if args.incar is None:
         extra_vars = args.extra_vars
@@ -146,40 +89,35 @@ def kgrid(args):
     kpt_conv.run(args.np)
     print("\nk-grid coverged: ", kpt_conv.success)
 
-    if kpt_conv.success == True:
+    if kpt_conv.success is True:
         print("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
+        if os.path.exists("convergence.dat"):
+            fi = open("convergence.dat", "a")
+        else:
+            fi = open("convergence.dat", "w")
+        fi.write("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
+        fi.close()
     else:
         print("k-grid convergence failed!")
 
     # Create new  KPOINTS file
-    if args.update:
-        if kpt_conv.success == True:
-            f = open("KPOINTS", "w")
-            f.write("Automatic mesh\n")
-            f.write("0\n")
-            f.write("Gamma\n")
-            f.write(
-                "%d %d %d\n"
-                % (
-                    kpt_conv.best_kpoints.grid[0],
-                    kpt_conv.best_kpoints.grid[1],
-                    kpt_conv.best_kpoints.grid[2],
-                )
+    if kpt_conv.success is True:
+        f = open("KPOINTS", "w")
+        f.write("Automatic mesh\n")
+        f.write("0\n")
+        f.write("Gamma\n")
+        f.write(
+            "%d %d %d\n"
+            % (
+                kpt_conv.best_kpoints.grid[0],
+                kpt_conv.best_kpoints.grid[1],
+                kpt_conv.best_kpoints.grid[2],
             )
-            f.write("0 0 0")
-            f.close()
-            restore(restore_incar=True)
-            if os.path.exists("INCAR"):
-                os.remove("INCAR.bak")
-        else:
-            print("Update failed!")
+        )
+        f.write("0 0 0")
+        f.close()
     else:
-        # restoring files
-        restore(restore_kpoints=True, restore_incar=True)
-        if os.path.exists("INCAR.bak"):
-            os.remove("INCAR.bak")
-        if os.path.exists("KPOINTS.bak"):
-            os.remove("KPOINTS.bak")
+        print("Update failed!")
 
 
 def encut(args):
@@ -189,7 +127,6 @@ def encut(args):
     """
     print("\nRunning ENCUT convergence...")
     st = load_poscar()
-    backup("encut")
 
     if args.incar is None:
         extra_vars = args.extra_vars
@@ -211,32 +148,16 @@ def encut(args):
     encut_conv.run(args.np)
     print("\nENCUT coverged: ", encut_conv.success)
 
-    if encut_conv.success == True:
+    if encut_conv.success is True:
         print("Optimal ENCUT: ", encut_conv.best_encut)
+        if os.path.exists("convergence.dat"):
+            fi = open("convergence.dat", "a")
+        else:
+            fi = open("convergence.dat", "w")
+        fi.write("Optimal ENCUT: ", encut_conv.best_encut)
+        fi.close()
     else:
         print("ENCUT convergence failed!")
-
-    if args.update:
-        # restoring files
-        restore(restore_incar=True, restore_kpoints=True)
-        if os.path.exists("KPOINTS.bak"):
-            os.remove("KPOINTS.bak")
-        if encut_conv.success == True:
-            # Update INCAR with new ENCUT
-            estr = "ENCUT = " + str(encut_conv.best_encut)
-            with open("INCAR", "r") as sources:
-                lines = sources.readlines()
-            with open("INCAR", "w") as sources:
-                for line in lines:
-                    sources.write(re.sub(r"ENCUT\s*=\s*([\d.]*)", estr, line))
-        else:
-            print("Update failed!")
-    else:
-        restore(restore_incar=True, restore_kpoints=True)
-        if os.path.exists("KPOINTS.bak"):
-            os.remove("KPOINTS.bak")
-        if os.path.exists("INCAR.bak"):
-            os.remove("INCAR.bak")
 
 
 def complete(args):
@@ -244,11 +165,7 @@ def complete(args):
     Function for both k-grid and ENCUT convergence.
     """
     kgrid(args)
-    if os.path.exists("KPOINTS.bak"):
-        shutil.copy("KPOINTS.bak", "KPOINTS.bak2")
     encut(args)
-    if os.path.exists("KPOINTS.bak2"):
-        os.rename("KPOINTS.bak2", "KPOINTS.bak")
 
 
 def relax(args):
@@ -279,7 +196,6 @@ def relax(args):
         extra_vars = in_obj.variables
 
     st = load_poscar()
-    backup("relax")
     relax_st = pychemia.code.vasp.task.IonRelaxation(
         structure=st,
         workdir=".",
@@ -339,11 +255,6 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_kgrid.add_argument(
-            "-update",
-            help="Write new KPOINTS file? (Will use a Gamma centered mesh.)",
-            action="store_true",
-        )
-        parser_kgrid.add_argument(
             "-psp_options",
             help="Pseudopotential options. ",
             default=None,
@@ -388,11 +299,6 @@ if __name__ == "__main__":
             choices=["potpaw_LDA", "potpaw_PBE"],
         )
         parser_encut.add_argument(
-            "-update",
-            help="Update INCAR with new ENCUT?",
-            action="store_true",
-        )
-        parser_encut.add_argument(
             "-psp_options",
             help="Pseudopotential options. ",
             default=None,
@@ -435,11 +341,6 @@ if __name__ == "__main__":
             type=str,
             help="Pseudopotential",
             choices=["potpaw_LDA", "potpaw_PBE"],
-        )
-        parser_complete.add_argument(
-            "-update",
-            help="Update INCAR and KPOINTS?",
-            action="store_true",
         )
         parser_complete.add_argument(
             "-psp_options",
