@@ -95,7 +95,7 @@ def kgrid(args):
             fi = open("convergence.dat", "a")
         else:
             fi = open("convergence.dat", "w")
-        fi.write("Optimal k-grid: ", kpt_conv.best_kpoints.grid)
+        fi.write("Optimal k-grid: %s " % kpt_conv.best_kpoints.grid)
         fi.close()
     else:
         print("k-grid convergence failed!")
@@ -154,7 +154,7 @@ def encut(args):
             fi = open("convergence.dat", "a")
         else:
             fi = open("convergence.dat", "w")
-        fi.write("Optimal ENCUT: ", encut_conv.best_encut)
+        fi.write("Optimal ENCUT: %s " % encut_conv.best_encut)
         fi.close()
     else:
         print("ENCUT convergence failed!")
