@@ -95,7 +95,7 @@ def kgrid(args):
             fi = open("convergence.dat", "a")
         else:
             fi = open("convergence.dat", "w")
-        fi.write("Optimal k-grid: %s " % kpt_conv.best_kpoints.grid)
+        fi.write("Optimal k-grid: %s \n" % kpt_conv.best_kpoints.grid)
         fi.close()
     else:
         print("k-grid convergence failed!")
@@ -119,8 +119,10 @@ def kgrid(args):
     else:
         print("Update failed!")
 
+    return kpt_conv
 
-def encut(args):
+
+def encut(args, best_kgrid=None):
     """
     Function for ENCUT convergence.
 
@@ -143,6 +145,7 @@ def encut(args):
         energy_tolerance=args.energy_tolerance,
         psp_options=args.psp_options,
         heterostructure=args.heterostructure,
+        kpoints=best_kgrid,
     )
 
     encut_conv.run(args.np)
@@ -154,18 +157,46 @@ def encut(args):
             fi = open("convergence.dat", "a")
         else:
             fi = open("convergence.dat", "w")
-        fi.write("Optimal ENCUT: %s " % encut_conv.best_encut)
+        fi.write("Optimal ENCUT: %s \n" % encut_conv.best_encut)
         fi.close()
     else:
         print("ENCUT convergence failed!")
+
+    return encut_conv
 
 
 def complete(args):
     """
     Function for both k-grid and ENCUT convergence.
     """
-    kgrid(args)
-    encut(args)
+    kpt_conv = kgrid(args)
+
+    # Remove ENCUT from INCAR
+    with open("INCAR", "r") as f:
+        lines = f.readlines()
+    with open("INCAR", "w") as f:
+        for line in lines:
+            if not re.match(r"ENCUT", line):
+                f.write(line)
+
+    # Run energy convergence with best kgrid
+    encut(args, best_kgrid=kpt_conv.best_kpoints)
+
+    # Write best KPOINTS file
+    f = open("KPOINTS", "w")
+    f.write("Automatic mesh\n")
+    f.write("0\n")
+    f.write("Gamma\n")
+    f.write(
+        "%d %d %d\n"
+        % (
+            kpt_conv.best_kpoints.grid[0],
+            kpt_conv.best_kpoints.grid[1],
+            kpt_conv.best_kpoints.grid[2],
+        )
+    )
+    f.write("0 0 0")
+    f.close()
 
 
 def relax(args):
