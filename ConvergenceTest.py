@@ -146,6 +146,7 @@ def encut(args, best_kgrid=None):
         psp_options=args.psp_options,
         heterostructure=args.heterostructure,
         kpoints=best_kgrid,
+        increment_factor=0.1,
     )
 
     encut_conv.run(args.np)
