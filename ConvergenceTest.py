@@ -79,7 +79,7 @@ def kgrid(args):
     kpt_conv = pychemia.code.vasp.task.ConvergenceKPointGrid(
         structure=st,
         workdir=".",
-        executable="vasp_std",
+        executable=args.vasp_exe,
         pspdir=args.pspdir,
         extra_vars=extra_vars,
         psp_options=args.psp_options,
@@ -139,7 +139,7 @@ def encut(args, best_kgrid=None):
     encut_conv = pychemia.code.vasp.task.ConvergenceCutOffEnergy(
         structure=st,
         workdir=".",
-        executable="vasp_std",
+        executable=args.vasp_exe,
         pspdir=args.pspdir,
         extra_vars=extra_vars,
         energy_tolerance=args.energy_tolerance,
@@ -232,7 +232,7 @@ def relax(args):
         structure=st,
         workdir=".",
         target_forces=args.target_forces,
-        executable="vasp_std",
+        executable=args.vasp_exe,
         encut=encut_val,
         kp_grid=gridline,
         pspdir=args.pspdir,
@@ -309,6 +309,11 @@ if __name__ == "__main__":
             type=str,
             help="INCAR file name. If not provided will be generated automatically.",
         )
+        parser_kgrid.add_argument(
+            "-vasp_exe",
+            default="vasp_std",
+            type=str,
+            help="vasp executable",
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -353,6 +358,12 @@ if __name__ == "__main__":
             type=str,
             help="INCAR file name. If not provided will be generated automatically.",
         )
+        parser_encut.add_argument(
+            "-vasp_exe",
+            default="vasp_std",
+            type=str,
+            help="vasp executable",
+
 
         parser_encut.set_defaults(func=encut)
 
@@ -397,6 +408,11 @@ if __name__ == "__main__":
             type=str,
             help="INCAR file name. If not provided will be generated automatically.",
         )
+        parser_complete.add_argument(
+            "-vasp_exe",
+            default="vasp_std",
+            type=str,
+            help="vasp executable",
 
         parser_complete.set_defaults(func=complete)
 
@@ -452,6 +468,11 @@ if __name__ == "__main__":
             type=str,
             help="INCAR file name. If not provided will be generated automatically.",
         )
+        parser_relax.add_argument(
+            "-vasp_exe",
+            default="vasp_std",
+            type=str,
+            help="vasp executable",
 
         # parser_relax.add_argument(
         #     "-energy_tolerance",
