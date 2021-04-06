@@ -313,7 +313,7 @@ if __name__ == "__main__":
             "-vasp_exe",
             default="vasp_std",
             type=str,
-            help="vasp executable",
+            help="vasp executable")
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -362,8 +362,7 @@ if __name__ == "__main__":
             "-vasp_exe",
             default="vasp_std",
             type=str,
-            help="vasp executable",
-
+            help="vasp executable")
 
         parser_encut.set_defaults(func=encut)
 
@@ -472,7 +471,7 @@ if __name__ == "__main__":
             "-vasp_exe",
             default="vasp_std",
             type=str,
-            help="vasp executable",
+            help="vasp executable")
 
         # parser_relax.add_argument(
         #     "-energy_tolerance",
