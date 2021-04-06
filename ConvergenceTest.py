@@ -310,10 +310,8 @@ if __name__ == "__main__":
             help="INCAR file name. If not provided will be generated automatically.",
         )
         parser_kgrid.add_argument(
-            "-vasp_exe",
-            default="vasp_std",
-            type=str,
-            help="vasp executable")
+            "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
+        )
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -359,10 +357,8 @@ if __name__ == "__main__":
             help="INCAR file name. If not provided will be generated automatically.",
         )
         parser_encut.add_argument(
-            "-vasp_exe",
-            default="vasp_std",
-            type=str,
-            help="vasp executable")
+            "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
+        )
 
         parser_encut.set_defaults(func=encut)
 
@@ -412,6 +408,7 @@ if __name__ == "__main__":
             default="vasp_std",
             type=str,
             help="vasp executable",
+        )
 
         parser_complete.set_defaults(func=complete)
 
@@ -468,10 +465,8 @@ if __name__ == "__main__":
             help="INCAR file name. If not provided will be generated automatically.",
         )
         parser_relax.add_argument(
-            "-vasp_exe",
-            default="vasp_std",
-            type=str,
-            help="vasp executable")
+            "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
+        )
 
         # parser_relax.add_argument(
         #     "-energy_tolerance",
