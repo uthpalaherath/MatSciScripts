@@ -3,7 +3,7 @@
 
 #-------------------- STARTING PARAMETERS --------------------
 system   =  Default
-#ICHARG = 11
+#ICHARG=11
 #ISTART = 0
 #GGA = PS
 PREC      =  Accurate

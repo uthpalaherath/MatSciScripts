@@ -11,10 +11,9 @@ output_file = "Si.out"
 pp_dirpath "~/local/abinit/pseudo-dojo/paw_pbe_standard/"
 pseudos "Si.xml"
 
-
 #-------------------- PARALLELIZATION  --------------------
 
-autoparal 4
+autoparal 1
 
 #-------------------- UNIT CELL --------------------
 
@@ -96,47 +95,47 @@ nband 10           # Number of bands
 #-------------------- BANDSTRUCTURE --------------------
 # UNCOMMENT THIS SECTION AND COMMENT K-GRID, SCF SECTIONS.
 
-ndtset 2
-jdtset 1 2
+# ndtset 2
+# jdtset 1 2
 
-diemac 9.0
-nstep 50
-optforces 1
-nband 15
-chksymbreak 0      # Check k-point symmetry breaking
-enunit    1        # Energy eigenvalues in eV
+# diemac 9.0
+# nstep 50
+# optforces 1
+# nband 15
+# chksymbreak 0      # Check k-point symmetry breaking
+# enunit    1        # Energy eigenvalues in eV
 
 
-# DATASET 1 : SCF CALCULATION
-kptopt1 1           # K-point symmetry type
-ngkpt1 8 8 8        # Monkhorst-Pack grid
-nshiftk1 1
-shiftk1 0.5 0.5 0.5 # Choice of origin
+# # DATASET 1 : SCF CALCULATION
+# kptopt1 1           # K-point symmetry type
+# ngkpt1 8 8 8        # Monkhorst-Pack grid
+# nshiftk1 1
+# shiftk1 0.5 0.5 0.5 # Choice of origin
 
-prtden1 1           # Print the density, for use by dataset 2
-toldfe1 1.0d-6      # Tolerance on difference of total energy (Ha)
+# prtden1 1           # Print the density, for use by dataset 2
+# toldfe1 1.0d-6      # Tolerance on difference of total energy (Ha)
 
-# DATASET 2 : NSCF CALCULATION (BANDSTRUCTURE)
-iscf2      -2
-getden2     1
-tolwfr2     1.0d-12
+# # DATASET 2 : NSCF CALCULATION (BANDSTRUCTURE)
+# iscf2      -2
+# getden2     1
+# tolwfr2     1.0d-12
 
-kptopt2     -5          # -1 x Number of segments (#HSP-1)
-kptbounds2  0.0 0.0 0.0 #Gamma
-            0.0 1/2 1/2 #X
-            1/4 1/2 3/4 #W
-            1/2 1/2 1/2 #L
-            0.0 0.0 0.0 #Gamma
-            3/8 3/8 3/4 #K
+# kptopt2     -5          # -1 x Number of segments (#HSP-1)
+# kptbounds2  0.0 0.0 0.0 #Gamma
+#             0.0 1/2 1/2 #X
+#             1/4 1/2 3/4 #W
+#             1/2 1/2 1/2 #L
+#             0.0 0.0 0.0 #Gamma
+#             3/8 3/8 3/4 #K
 
-ndivk2     4*40 39 # divisions of segments OR
-#ndivsm2    10 # divisions of the smallest of the segment
+# ndivk2     4*40 39 # divisions of segments OR
+# #ndivsm2    10 # divisions of the smallest of the segment
 
-# OUTPUTS
-prtprocar2 1        # Print PROCAR
-prtdos2    3        # Print DOS
-prtdosm2   1        # Print DOS with m decomposition
-prtebands2 2        # output gnuplot files
+# # OUTPUTS
+# prtprocar2 1        # Print PROCAR
+# prtdos2    3        # Print DOS
+# prtdosm2   1        # Print DOS with m decomposition
+# prtebands2 2        # output gnuplot files
 
 
 #-------------------- ATOMIC OPTIMIZATION --------------------
