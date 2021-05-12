@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-VASP Convergence Test.
+VASP Convergence testing and structural optimization.
 
 Author: Uthpala Herath
 
@@ -14,32 +14,35 @@ assumed to be vasp_std. Perform the ionic relaxation only after both
 ENCUT and k-grid convergences are done. The converged values will
 automatically be read for the ionic relaxation.
 For keeping the repeating order in POSCAR when generating POTCARs
-use -heterostructure flag.
+use -heterostructure flag. To read values from INCAR use the -incar flag followed
+by INCAR.
 
 WARNING: INCAR and KPOINTS will be overwritten. Remember to backup originals.
 
 Usage:
 
-$ ConvergenceTest.py {kgrid,encut,complete,relax}
+$ Convergence.py {kgrid,encut,complete,relax}
                     -np <number of processors>
                     -extra_vars '{"key" : "value"}'
                     -pspdir {potpaw_PBE,potpaw_LDA}
                     -psp_options '{"key" : "value"}'
                     -heterostructure
                     -incar INCAR
+                    -make_potcar
 
 
 E.g.-
 
-$ ConvergenceTest.py encut
+$ Convergence.py encut
                     -np 16
                     -extra_vars '{"NCORE" : "2", "ISPIN" : "1"}'
                     -pspdir potpaw_PBE
                     -psp_options '{"Sr":"sv"}'
 
-$ ConvergenceTest.py relax
+$ Convergence.py relax
                     -np 16
-                    -max_calls 30
+                    -relax_cell
+                    -incar INCAR
 
 """
 
@@ -85,6 +88,7 @@ def kgrid(args):
         psp_options=args.psp_options,
         energy_tolerance=args.energy_tolerance,
         heterostructure=args.heterostructure,
+        make_potcar=args.make_potcar,
     )
     kpt_conv.run(args.np)
     print("\nk-grid coverged: ", kpt_conv.success)
@@ -147,6 +151,7 @@ def encut(args, best_kgrid=None):
         heterostructure=args.heterostructure,
         kpoints=best_kgrid,
         increment_factor=0.1,
+        make_potcar=args.make_potcar,
     )
 
     encut_conv.run(args.np)
@@ -240,7 +245,9 @@ def relax(args):
         extra_vars=extra_vars,
         heterostructure=args.heterostructure,
         relax_cell=args.relax_cell,
-        psp_options=args.psp_options
+        psp_options=args.psp_options,
+        make_potcar=args.make_potcar,
+        auto_ibrion=args.auto_ibrion
         # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
@@ -312,6 +319,11 @@ if __name__ == "__main__":
         parser_kgrid.add_argument(
             "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
         )
+        parser_kgrid.add_argument(
+            "-make_potcar",
+            help="Flag to automatically generate POTCAR.",
+            action="store_true",
+        )
 
         parser_kgrid.set_defaults(func=kgrid)
 
@@ -358,6 +370,11 @@ if __name__ == "__main__":
         )
         parser_encut.add_argument(
             "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
+        )
+        parser_encut.add_argument(
+            "-make_potcar",
+            help="Flag to automatically generate POTCAR.",
+            action="store_true",
         )
 
         parser_encut.set_defaults(func=encut)
@@ -408,6 +425,11 @@ if __name__ == "__main__":
             default="vasp_std",
             type=str,
             help="vasp executable",
+        )
+        parser_complete.add_argument(
+            "-make_potcar",
+            help="Flag to automatically generate POTCAR.",
+            action="store_true",
         )
 
         parser_complete.set_defaults(func=complete)
@@ -466,6 +488,16 @@ if __name__ == "__main__":
         )
         parser_relax.add_argument(
             "-vasp_exe", default="vasp_std", type=str, help="vasp executable"
+        )
+        parser_relax.add_argument(
+            "-make_potcar",
+            help="Flag to automatically generate POTCAR.",
+            action="store_true",
+        )
+        parser_relax.add_argument(
+            "-auto_ibrion",
+            help="Flag to set adaptive IBRION update.",
+            action="store_true",
         )
 
         # parser_relax.add_argument(
