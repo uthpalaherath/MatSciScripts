@@ -11,11 +11,14 @@ k-grid and energy cut-off convergence. It is assumed that the
 structure file is named POSCAR and the pseudopotentials are stored
 in ~/.vasp/PP-VASP/{potpaw_PBE,potpaw_LDA}/. The VASP executable is
 assumed to be vasp_std. Perform the ionic relaxation only after both
-ENCUT and k-grid convergences are done. The converged values will
-automatically be read for the ionic relaxation.
+ENCUT and k-grid convergences are done.
 For keeping the repeating order in POSCAR when generating POTCARs
-use -heterostructure flag. To read values from INCAR use the -incar flag followed
+use -heterostructure flag.
+To read values from INCAR use the -incar flag followed
 by INCAR.
+-make_potcar will automatically generate a POTCAR from POSCAR.
+-auto_ibrion turns on the adaptive IBRION. If VTST Tools is available
+-fire will use the FIRE algorithm for relaxation.
 
 WARNING: INCAR and KPOINTS will be overwritten. Remember to backup originals.
 
@@ -29,7 +32,8 @@ $ Convergence.py {kgrid,encut,complete,relax}
                     -heterostructure
                     -incar INCAR
                     -make_potcar
-
+                    -auto_ibrion
+                    -fire
 
 E.g.-
 
@@ -247,7 +251,8 @@ def relax(args):
         relax_cell=args.relax_cell,
         psp_options=args.psp_options,
         make_potcar=args.make_potcar,
-        auto_ibrion=args.auto_ibrion
+        auto_ibrion=args.auto_ibrion,
+        fire=args.fire
         # energy_tolerance=args.energy_tolerance, #Not an input argument
     )
     relax_st.run(args.np)
@@ -497,6 +502,11 @@ if __name__ == "__main__":
         parser_relax.add_argument(
             "-auto_ibrion",
             help="Flag to set adaptive IBRION update.",
+            action="store_true",
+        )
+        parser_relax.add_argument(
+            "-fire",
+            help="Flag to use FIRE algorithm for relaxation. Requires -auto_ibrion. ",
             action="store_true",
         )
 
