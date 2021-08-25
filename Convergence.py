@@ -138,6 +138,14 @@ def encut(args, best_kgrid=None):
     print("\nRunning ENCUT convergence...")
     st = load_poscar()
 
+    # Remove ENCUT from INCAR
+    with open("INCAR", "r") as f:
+        lines = f.readlines()
+    with open("INCAR", "w") as f:
+        for line in lines:
+            if not re.match(r"ENCUT", line):
+                f.write(line)
+
     if args.incar is None:
         extra_vars = args.extra_vars
     else:
@@ -180,14 +188,6 @@ def complete(args):
     Function for both k-grid and ENCUT convergence.
     """
     kpt_conv = kgrid(args)
-
-    # Remove ENCUT from INCAR
-    with open("INCAR", "r") as f:
-        lines = f.readlines()
-    with open("INCAR", "w") as f:
-        for line in lines:
-            if not re.match(r"ENCUT", line):
-                f.write(line)
 
     # Run energy convergence with best kgrid
     encut(args, best_kgrid=kpt_conv.best_kpoints)
