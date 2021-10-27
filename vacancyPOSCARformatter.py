@@ -40,18 +40,18 @@ def formatter(infile="POSCAR", outfile="POSCAR_new"):
 
     for i in range(len(cell_matrix)):
         cell_matrix0 = np.array(cell_matrix[i].split())
-        cell[i, :] = (cell_matrix0.astype(np.float)) * np.array(
+        cell[i, :] = (cell_matrix0.astype(float)) * np.array(
             POSCAR[1].split()
-        ).astype(np.float)
+        ).astype(float)
 
     # positions
-    atoms = np.array(POSCAR[6].split()).astype(np.int)
+    atoms = np.array(POSCAR[6].split()).astype(int)
     positions_matrix = POSCAR[8 : 8 + sum(atoms)]
     positions = np.zeros(shape=(np.sum(atoms), 3))
 
     for j in range(len(positions_matrix)):
         positions_matrix0 = np.array(positions_matrix[j].split())[0:3]
-        positions[j, :] = positions_matrix0.astype(np.float)
+        positions[j, :] = positions_matrix0.astype(float)
 
     structure_name_list = POSCAR[5].split()
     atom_type_list = POSCAR[6].split()
