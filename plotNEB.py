@@ -52,7 +52,7 @@ def plot_NEB(natoms=1):
     plt.grid(color="gainsboro", ls="--", lw=0.6)
     plt.title("NEB")
     plt.savefig("NEB.pdf")
-    plt.show()
+    #plt.show()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)

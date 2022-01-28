@@ -263,10 +263,16 @@ def relax(args):
     avg_force = vaspout.relaxation_info()["avg_force"]
     print("EDIFFG = %f and Average force = %f" % (ediffg, avg_force))
 
+    # output status
+    fi = open("relax.dat", "w")
     if avg_force <= ediffg:
         print("Forces are converged.")
+        fi.write("EDIFFG = %f and Average force = %f" % (ediffg, avg_force))
+        fi.write("Forces are converged.")
     else:
         print("Forces are not converged.")
+        fi.write("Forces are not converged.")
+    fi.close()
 
 
 if __name__ == "__main__":
@@ -459,7 +465,7 @@ if __name__ == "__main__":
         )
         parser_relax.add_argument(
             "-target_forces",
-            default=1e-4,
+            default=1e-3,
             type=float,
             help="Target force difference",
         )
