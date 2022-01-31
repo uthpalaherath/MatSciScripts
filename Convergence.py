@@ -268,11 +268,11 @@ def relax(args):
     if avg_force <= ediffg:
         print("Forces are converged.")
         fi.write("EDIFFG = %f and Average force = %f\n" % (ediffg, avg_force))
-        fi.write("Forces are converged.")
+        fi.write("Forces are converged.\n")
     else:
         print("Forces are not converged.")
         fi.write("EDIFFG = %f and Average force = %f\n" % (ediffg, avg_force))
-        fi.write("Forces are not converged.")
+        fi.write("Forces are not converged.\n")
     fi.close()
 
 
