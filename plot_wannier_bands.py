@@ -62,7 +62,7 @@ def plot_wannier_bands(
         x.append([])
         y.append([])
         i = 0
-        for line in lines[0:-1]:
+        for line in lines:
             if line != "\n":
                 x[i].append(float(line.split()[0]))
                 y[i].append(float(line.split()[1]))
@@ -81,6 +81,10 @@ def plot_wannier_bands(
     for i in range(len(x)):
         ax.plot(x[i], y[i] - EFERMI, color="blue")
 
+    ax.set_xlim(x.min(), x.max())
+    if elimit:
+        ax.set_ylim(elimit)
+
     ax.set_xticks(ticks)
     ax.set_xticklabels(knames)
     ax.set_xlabel(r"$k$-path")
@@ -88,10 +92,6 @@ def plot_wannier_bands(
     ax.axhline(y=0, color="black", ls="--")
     for xc in ticks:
         ax.axvline(x=xc, color="k")
-
-    ax.set_xlim(x.min(), x.max())
-    if elimit:
-        ax.set_ylim(elimit)
 
     fig.tight_layout()
 
