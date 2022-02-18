@@ -17,7 +17,7 @@ from argparse import RawTextHelpFormatter
 
 
 def plot_wannier_bands(
-    outcar="OUTCAR.scf", savefig="wannier90_bands.png", show=True, elimit=None
+    outcar="OUTCAR.scf", savefig="wannier90_bands.png", show=False, elimit=None
 ):
     """This method plots wannier bands"""
 
@@ -77,6 +77,7 @@ def plot_wannier_bands(
     # Plotting
     fig = plt.figure(figsize=(13, 9))
     ax = fig.add_subplot(111)
+    fig.tight_layout()
 
     for i in range(len(x)):
         ax.plot(x[i], y[i] - EFERMI, color="blue")
@@ -90,10 +91,9 @@ def plot_wannier_bands(
     ax.set_xlabel(r"$k$-path")
     ax.set_ylabel(r"$E-E_F$ (eV)")
     ax.axhline(y=0, color="black", ls="--")
+    ax.grid()
     for xc in ticks:
         ax.axvline(x=xc, color="k")
-
-    fig.tight_layout()
 
     if show:
         plt.show()
@@ -113,5 +113,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "-elimit", type=float, nargs=2, help="Energy axis range", default=None
     )
+    parser.add_argument("-show", action="store_true", help="Flag to show plot.")
     args = parser.parse_args()
-    plot_wannier_bands(outcar=args.outcar, elimit=args.elimit)
+    plot_wannier_bands(outcar=args.outcar, elimit=args.elimit, show=args.show)
