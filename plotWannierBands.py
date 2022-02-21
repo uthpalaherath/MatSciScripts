@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """ Wannier90 band structure plotter.
 
-This script plots the wannier90 band structure.
+This script plots the wannier90 band structure and compares
+it to the DFT band structure.
 
-Author: Uthpala Herath
+Authors: Uthpala Herath and Andres Tellez
 """
 
 import numpy as np
