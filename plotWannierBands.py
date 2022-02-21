@@ -47,7 +47,7 @@ def kpoint_conversion(value, kpoints1, kpoints2):
 
 
 def plot_bands(
-    outcar="OUTCAR.scf",
+    outcar="OUTCAR",
     savefig="wannier90_bands.png",
     show=False,
     elimit=None,
@@ -199,9 +199,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=RawTextHelpFormatter
     )
-    parser.add_argument(
-        "-outcar", type=str, help="SCF OUTCAR file.", default="OUTCAR.scf"
-    )
+    parser.add_argument("-outcar", type=str, help="SCF OUTCAR file.", default="OUTCAR")
     parser.add_argument(
         "-elimit", type=float, nargs=2, help="Energy axis range", default=None
     )
@@ -209,7 +207,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-compare",
         action="store_true",
-        help="Flag to compare wannier90 bands with DFT bands. (Requires PyProcar)",
+        help="Flag to compare wannier90 bands with DFT bands (Requires PyProcar with PROCAR, KPOINTS and SCF OUTCAR).",
     )
     args = parser.parse_args()
     plot_bands(
