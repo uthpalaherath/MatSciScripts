@@ -49,7 +49,7 @@ def kpoint_conversion(value, kpoints1, kpoints2):
 
 def plot_bands(
     outcar="OUTCAR",
-    savefig="wannier90_bands.png",
+    savefig="wannier90_bands.pdf",
     show=False,
     elimit=None,
     compare=False,
