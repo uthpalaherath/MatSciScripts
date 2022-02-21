@@ -99,7 +99,7 @@ def plot_bands(
         y.append([])
         i = 0
         for line in lines:
-            if line != "\n":
+            if line != "  \n":
                 x[i].append(float(line.split()[0]))
                 y[i].append(float(line.split()[1]))
             else:
@@ -107,8 +107,14 @@ def plot_bands(
                 y.append([])
                 i += 1
 
-    x = np.array(x)
-    y = np.array(y)
+    # There sometimes is an extra line in wannier90_band.dat.
+    # We will remove it if it is there.
+    if not x[-1]:
+        x = np.array(x[:-1])
+        y = np.array(y[:-1])
+    else:
+        x = np.array(x)
+        y = np.array(y)
 
     if not compare:
         # Plotting
