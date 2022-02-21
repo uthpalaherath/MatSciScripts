@@ -8,6 +8,7 @@ Author: Uthpala Herath
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import re
 import argparse
 from argparse import RawTextHelpFormatter
@@ -163,7 +164,7 @@ def plot_bands(
 
         # Plotting
         for i in range(len(x_new)):
-            ax.plot(x_new[i], y[i] - EFERMI, color="blue")
+            ax.plot(x_new[i], y[i] - EFERMI, color="blue", linewidth=2)
 
         ax.set_xlim(x_new.min(), x_new.max())
         if elimit:
@@ -177,6 +178,13 @@ def plot_bands(
         ax.grid()
         # for xc in ticks:
         #     ax.axvline(x=xc, color="k")
+
+        # legend
+        custom_lines = [
+            Line2D([0], [0], color="red", lw=2),
+            Line2D([0], [0], color="blue", lw=2),
+        ]
+        plt.legend(custom_lines, ["DFT", "wannier90"])
 
         # replot with PyProcar with new axis
         if show:
