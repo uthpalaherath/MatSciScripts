@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-""" Wannier90 band structure plotter.
+""" PyProcar DOS plotter.
 
-This script plots the wannier90 band structure and compares
-it to the DFT band structure.
+This script plots the DOS using PyProcar
 
-Authors: Uthpala Herath and Andres Tellez
+Authors: Uthpala Herath
 """
 
 import numpy as np
@@ -21,41 +20,13 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# Show no PyProcar output
-# f = open(os.devnull, "w")
-# sys.stdout = f
 
-
-def kpoint_conversion(value, kpoints1, kpoints2):
-    """Finds transformation between DFT k-points and
-    wannier90 k-points. Original implementation by Andres Tellez."""
-
-    idx = 0
-    for point in kpoints1:
-        if value <= point:
-            idx = kpoints1.index(point)
-            break
-
-    result = value - kpoints1[idx - 1]
-    try:
-        result *= (kpoints2[idx] - kpoints2[idx - 1]) / (
-            kpoints1[idx] - kpoints1[idx - 1]
-        )
-    except ZeroDivisionError:
-        result *= 1.0
-    result += kpoints2[idx - 1]
-
-    return result
-
-
-def plot_bands(
-    outcar="OUTCAR",
-    savefig="wannier90_bands.pdf",
+def plot_dos(
+    savefig="DFT_DOS.pdf",
     show=False,
     elimit=None,
-    compare=False,
 ):
-    """This method plots wannier bands"""
+    """This method plots DFT DOS"""
 
     plt.rcParams["mathtext.default"] = "regular"
     plt.rcParams["font.family"] = "Arial"
@@ -72,7 +43,6 @@ def plot_bands(
             line_fermi = line
     val = re.search(r"(\-?\d+\.?\d*)", line_fermi)
     EFERMI = float(val.group(1))
-    fi.close()
     print("Fermi energy = {:4.4f} eV".format(EFERMI))
 
     # Reading labels
@@ -215,7 +185,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=RawTextHelpFormatter
     )
-    parser.add_argument("-outcar", type=str, help="SCF OUTCAR file.", default="OUTCAR")
     parser.add_argument(
         "-elimit", type=float, nargs=2, help="Energy axis range", default=None
     )
