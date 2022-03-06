@@ -435,7 +435,7 @@ def plot_dos(
         ax.set_xlim(elimit)
 
     ax.set_xlabel(r"E-E$_F$ (eV)")
-    ax.set_ylabel(r"DOS")
+    ax.set_ylabel(r"DOS (a.u.)")
     ax.set_title(r"DFT DOS")
     ax.axhline(y=0, color="black", ls="-")
     ax.axvline(x=0, color="black", ls="--")
