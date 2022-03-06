@@ -30,7 +30,7 @@ def plot_dos(
     savefig="DFT_DOS.pdf",
     show=False,
     elimit=None,
-    ylim=None,
+    ylimit=None,
     atoms=None,
     degenerate=False,
 ):
@@ -115,8 +115,11 @@ def plot_dos(
         ax.plot(x2, y2, label=species[1] + "-d$_{eg}$")
         ax.plot(x3, y3, label="O-p")
 
-        if ylim:
-            ax.set_ylim(min(y1, y2, y3), max(y1, y2, y3))
+        if ylimit:
+            ax.set_ylimit = ylimit
+        else:
+            ax.set_ylim(min(min(y1), min(y2), min(y3)), max(max(y1), max(y2), max(y3)))
+
         if elimit:
             ax.set_xlim(elimit)
 
@@ -240,8 +243,13 @@ def plot_dos(
         ax.plot(x5, y5, label=species[1] + "-d$_{x^2-y^2}$")
         ax.plot(x6, y4, label="O-p")
 
-        if ylim:
-            ax.set_ylim(min(y1, y2, y3, y4, y5, y6), max(y1, y2, y3, y4, y5, y6))
+        if ylimit:
+            ax.set_ylim = ylimit
+        else:
+            ax.set_ylim(
+                min(min(y1), min(y2), min(y3), min(y4), min(y5), min(y6)),
+                max(max(y1), max(y2), max(y3), max(y4), max(y5), max(y6)),
+            )
         if elimit:
             ax.set_xlim(elimit)
 
@@ -268,10 +276,10 @@ if __name__ == "__main__":
         description=__doc__, formatter_class=RawTextHelpFormatter
     )
     parser.add_argument(
-        "-elimit", type=float, nargs=2, help="Energy axis range", default=None
+        "-elim", "--elimit", type=float, nargs=2, help="Energy axis range", default=None
     )
     parser.add_argument(
-        "-ylim", type=float, nargs=2, help="DOS axis range", default=None
+        "-ylim", "--ylimit", type=float, nargs=2, help="DOS axis range", default=None
     )
     parser.add_argument("-show", action="store_true", help="Flag to show plot.")
     parser.add_argument(
@@ -292,7 +300,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     plot_dos(
         elimit=args.elimit,
-        ylim=args.ylim,
+        ylimit=args.ylimit,
         atoms=args.atoms,
         degenerate=args.degenerate,
         show=args.show,
