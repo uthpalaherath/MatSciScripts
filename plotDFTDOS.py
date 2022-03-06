@@ -58,11 +58,6 @@ def plot_dos(
     else:
         atoms_d = [*np.arange(species_count[0], species_count[0] + species_count[1])]
 
-    # Create new figure environment
-    fig = plt.figure(figsize=(13, 9))
-    ax = fig.add_subplot(111)
-    fig.tight_layout()
-
     # Degenerate case
     if degenerate:
         # Here the eg and t2g orbital symmetry is conserved
@@ -137,6 +132,10 @@ def plot_dos(
             y3_dn = linedn.get_ydata()
 
         # Plotting
+        fig = plt.figure(figsize=(13, 9))
+        ax = fig.add_subplot(111)
+        fig.tight_layout()
+
         if not sp:
             ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$", color="blue")
             ax.plot(x2, y2, label=species[1] + "-d$_{eg}$", color="red")
@@ -324,6 +323,10 @@ def plot_dos(
             y6_dn = linedn.get_ydata()
 
         # Plotting
+        fig = plt.figure(figsize=(13, 9))
+        ax = fig.add_subplot(111)
+        fig.tight_layout()
+
         if not sp:
             ax.plot(x1, y1, label=species[1] + "-d$_{xy}$", color="blue")
             ax.plot(x2, y2, label=species[1] + "-d$_{yz}$", color="cyan")
