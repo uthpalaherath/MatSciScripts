@@ -116,7 +116,7 @@ def plot_dos(
         ax.plot(x3, y3, label="O-p")
 
         if ylimit:
-            ax.set_ylim = ylimit
+            ax.set_ylim(ylimit)
         else:
             ax.set_ylim(min(min(y1), min(y2), min(y3)), max(max(y1), max(y2), max(y3)))
 
@@ -244,7 +244,7 @@ def plot_dos(
         ax.plot(x6, y4, label="O-p")
 
         if ylimit:
-            ax.set_ylim = ylimit
+            ax.set_ylim(ylimit)
         else:
             ax.set_ylim(
                 min(min(y1), min(y2), min(y3), min(y4), min(y5), min(y6)),
