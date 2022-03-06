@@ -44,6 +44,9 @@ def plot_dos(
     plt.rc("xtick", labelsize=22)  # fontsize of the tick labels
     plt.rc("ytick", labelsize=22)  # fontsize of the tick labels
 
+    # spin polarized
+    sp = False
+
     # Reading POSCAR
     file = open("POSCAR", "r")
     data = file.readlines()
@@ -67,13 +70,23 @@ def plot_dos(
             orbitals=[4, 5, 7],
             atoms=atoms_d,
             plot_total=False,
-            plt_show=False
-            # elimit=elimit,
-            # labels=["O-up", "O-down"],
+            plt_show=False,
         )
-        line = ax.lines[0]
-        x1 = line.get_xdata()
-        y1 = line.get_ydata()
+
+        # check if spin polarized or not
+        if len(ax.lines[0].get_ydata()) == len(ax.lines[1].get_ydata()):
+            sp = True
+
+        if not sp:
+            line = ax.lines[0]
+            x1 = line.get_xdata()
+            y1 = line.get_ydata()
+        else:
+            lineup = ax.lines[0]
+            linedn = ax.lines[1]
+            x1 = lineup.get_xdata()
+            y1_up = lineup.get_ydata()
+            y1_dn = linedn.get_ydata()
 
         # eg orbital data
         fig, ax = pyprocar.dosplot(
@@ -82,13 +95,18 @@ def plot_dos(
             orbitals=[6, 8],
             atoms=atoms_d,
             plot_total=False,
-            plt_show=False
-            # elimit=elimit,
-            # labels=["O-up", "O-down"],
+            plt_show=False,
         )
-        line = ax.lines[0]
-        x2 = line.get_xdata()
-        y2 = line.get_ydata()
+        if not sp:
+            line = ax.lines[0]
+            x2 = line.get_xdata()
+            y2 = line.get_ydata()
+        else:
+            lineup = ax.lines[0]
+            linedn = ax.lines[1]
+            x2 = lineup.get_xdata()
+            y2_up = lineup.get_ydata()
+            y2_dn = linedn.get_ydata()
 
         # O-p orbital data
         fig, ax = pyprocar.dosplot(
@@ -102,23 +120,70 @@ def plot_dos(
                 )
             ],
             plot_total=False,
-            plt_show=False
-            # elimit=elimit,
-            # labels=["O-up", "O-down"],
+            plt_show=False,
         )
-        line = ax.lines[0]
-        x3 = line.get_xdata()
-        y3 = line.get_ydata()
+        if not sp:
+            line = ax.lines[0]
+            x3 = line.get_xdata()
+            y3 = line.get_ydata()
+        else:
+            lineup = ax.lines[0]
+            linedn = ax.lines[1]
+            x3 = lineup.get_xdata()
+            y3_up = lineup.get_ydata()
+            y3_dn = linedn.get_ydata()
 
         # Plotting
-        ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$")
-        ax.plot(x2, y2, label=species[1] + "-d$_{eg}$")
-        ax.plot(x3, y3, label="O-p")
+        if not sp:
+            ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$", color="blue")
+            ax.plot(x2, y2, label=species[1] + "-d$_{eg}$", color="red")
+            ax.plot(x3, y3, label="O-p", color="green")
 
-        if ylimit:
-            ax.set_ylim(ylimit)
+            if ylimit:
+                ax.set_ylim(ylimit)
+            else:
+                ax.set_ylim(
+                    min(min(y1), min(y2), min(y3)), max(max(y1), max(y2), max(y3))
+                )
+
         else:
-            ax.set_ylim(min(min(y1), min(y2), min(y3)), max(max(y1), max(y2), max(y3)))
+            # t2g
+            ax.plot(x1, y1_up, label=species[1] + r"-d$_{t2g} \uparrow$", color="blue")
+            ax.plot(
+                x1,
+                y1_dn,
+                label=species[1] + r"-d$_{t2g} \downarrow$",
+                color="blue",
+                linestyle="dotted",
+            )
+
+            # eg
+            ax.plot(x2, y2_up, label=species[1] + r"-d$_{eg} \uparrow$", color="red")
+            ax.plot(
+                x2,
+                y2_dn,
+                label=species[1] + r"-d$_{eg} \downarrow$",
+                color="red",
+                linestyle="dotted",
+            )
+
+            # O-p
+            ax.plot(x3, y3_up, label=species[1] + r"O-p \uparrow$", color="green")
+            ax.plot(
+                x3,
+                y3_dn,
+                label=species[1] + r"O-p \downarrow$",
+                color="green",
+                linestyle="dotted",
+            )
+
+            if ylimit:
+                ax.set_ylim(ylimit)
+            else:
+                ax.set_ylim(
+                    min(min(y1_dn), min(y2_dn), min(y3_dn)),
+                    max(max(y1_up), max(y2_up), max(y3_up)),
+                )
 
         if elimit:
             ax.set_xlim(elimit)
