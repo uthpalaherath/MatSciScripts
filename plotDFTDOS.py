@@ -168,11 +168,11 @@ def plot_dos(
             )
 
             # O-p
-            ax.plot(x3, y3_up, label=species[1] + r"O-p \uparrow$", color="green")
+            ax.plot(x3, y3_up, label=r"O-p $\uparrow$", color="green")
             ax.plot(
                 x3,
                 y3_dn,
-                label=species[1] + r"O-p \downarrow$",
+                label=r"O-p $\downarrow$",
                 color="green",
                 linestyle="dotted",
             )
@@ -191,6 +191,7 @@ def plot_dos(
         ax.set_xlabel(r"E-E$_F$ (eV)")
         ax.set_ylabel(r"DOS")
         ax.set_title(r"DFT DOS")
+        ax.axhline(y=0, color="black", ls="-")
         ax.axvline(x=0, color="black", ls="--")
         ax.grid(color="gainsboro", ls="--", lw=0.6)
         ax.legend(loc="best")
