@@ -9,7 +9,6 @@ Authors: Uthpala Herath
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import re
 import argparse
 from argparse import RawTextHelpFormatter
@@ -28,7 +27,6 @@ warnings.filterwarnings("ignore")
 
 def plot_dos(
     savefig="DFT_DOS.pdf",
-    show=False,
     elimit=None,
     ylimit=None,
     atoms=None,
@@ -64,7 +62,7 @@ def plot_dos(
     if degenerate:
         # Here the eg and t2g orbital symmetry is conserved
         # t2g orbital data
-        fig, ax = pyprocar.dosplot(
+        fig1, ax1 = pyprocar.dosplot(
             filename="vasprun.xml",
             mode="parametric_line",
             orbitals=[4, 5, 7],
@@ -74,22 +72,22 @@ def plot_dos(
         )
 
         # check if spin polarized or not
-        if len(ax.lines[0].get_ydata()) == len(ax.lines[1].get_ydata()):
+        if len(ax1.lines[0].get_ydata()) == len(ax1.lines[1].get_ydata()):
             sp = True
 
         if not sp:
-            line = ax.lines[0]
+            line = ax1.lines[0]
             x1 = line.get_xdata()
             y1 = line.get_ydata()
         else:
-            lineup = ax.lines[0]
-            linedn = ax.lines[1]
+            lineup = ax1.lines[0]
+            linedn = ax1.lines[1]
             x1 = lineup.get_xdata()
             y1_up = lineup.get_ydata()
             y1_dn = linedn.get_ydata()
 
         # eg orbital data
-        fig, ax = pyprocar.dosplot(
+        fig2, ax2 = pyprocar.dosplot(
             filename="vasprun.xml",
             mode="parametric_line",
             orbitals=[6, 8],
@@ -98,18 +96,18 @@ def plot_dos(
             plt_show=False,
         )
         if not sp:
-            line = ax.lines[0]
+            line = ax2.lines[0]
             x2 = line.get_xdata()
             y2 = line.get_ydata()
         else:
-            lineup = ax.lines[0]
-            linedn = ax.lines[1]
+            lineup = ax2.lines[0]
+            linedn = ax2.lines[1]
             x2 = lineup.get_xdata()
             y2_up = lineup.get_ydata()
             y2_dn = linedn.get_ydata()
 
         # O-p orbital data
-        fig, ax = pyprocar.dosplot(
+        fig3, ax3 = pyprocar.dosplot(
             filename="vasprun.xml",
             mode="parametric_line",
             orbitals=[1, 2, 3],
@@ -123,17 +121,21 @@ def plot_dos(
             plt_show=False,
         )
         if not sp:
-            line = ax.lines[0]
+            line = ax3.lines[0]
             x3 = line.get_xdata()
             y3 = line.get_ydata()
         else:
-            lineup = ax.lines[0]
-            linedn = ax.lines[1]
+            lineup = ax3.lines[0]
+            linedn = ax3.lines[1]
             x3 = lineup.get_xdata()
             y3_up = lineup.get_ydata()
             y3_dn = linedn.get_ydata()
 
         # Plotting
+        fig = plt.figure(figsize=(13, 9))
+        ax = fig.add_subplot(111)
+        fig.tight_layout()
+
         if not sp:
             ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$", color="blue")
             ax.plot(x2, y2, label=species[1] + "-d$_{eg}$", color="red")
@@ -181,8 +183,8 @@ def plot_dos(
                 ax.set_ylim(ylimit)
             else:
                 ax.set_ylim(
-                    min(min(y1_dn), min(y2_dn), min(y3_dn)),
-                    max(max(y1_up), max(y2_up), max(y3_up)),
+                    min(min(y1_dn), min(y2_dn),min(y3_dn)),
+                    max(max(y1_up), max(y2_up),max(y3_up)),
                 )
 
         if elimit:
@@ -195,10 +197,6 @@ def plot_dos(
         ax.axvline(x=0, color="black", ls="--")
         ax.grid(color="gainsboro", ls="--", lw=0.6)
         ax.legend(loc="best")
-
-        if show:
-            plt.show()
-
         plt.savefig("DFT_DOS.pdf")
 
     # Non-degenerate case
@@ -324,9 +322,6 @@ def plot_dos(
         ax.axvline(x=0, color="black", ls="--")
         ax.grid(color="gainsboro", ls="--", lw=0.6)
         ax.legend(loc="best")
-
-        if show:
-            plt.show()
         plt.savefig("DFT_DOS.pdf")
 
     # custom legend
@@ -347,7 +342,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "-ylim", "--ylimit", type=float, nargs=2, help="DOS axis range", default=None
     )
-    parser.add_argument("-show", action="store_true", help="Flag to show plot.")
     parser.add_argument(
         "-d",
         "--degenerate",
@@ -369,5 +363,4 @@ if __name__ == "__main__":
         ylimit=args.ylimit,
         atoms=args.atoms,
         degenerate=args.degenerate,
-        show=args.show,
     )
