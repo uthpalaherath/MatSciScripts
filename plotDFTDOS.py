@@ -127,6 +127,9 @@ def plot_dos(
         ax.grid(color="gainsboro", ls="--", lw=0.6)
         ax.legend(loc="best")
 
+        if show:
+            plt.show()
+
         plt.savefig("DFT_DOS.pdf")
 
     # Non-degenerate case
@@ -248,6 +251,8 @@ def plot_dos(
         ax.grid(color="gainsboro", ls="--", lw=0.6)
         ax.legend(loc="best")
 
+        if show:
+            plt.show()
         plt.savefig("DFT_DOS.pdf")
 
     # custom legend
