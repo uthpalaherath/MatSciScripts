@@ -31,6 +31,7 @@ def plot_dos(
     ylimit=None,
     atoms=None,
     degenerate=False,
+    oxygen=False
 ):
     """This method plots dos"""
 
@@ -139,7 +140,8 @@ def plot_dos(
         if not sp:
             ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$", color="blue")
             ax.plot(x2, y2, label=species[1] + "-d$_{eg}$", color="red")
-            ax.plot(x3, y3, label="O-p", color="green")
+            if oxygen:
+                ax.plot(x3, y3, label="O-p", color="green")
 
             if ylimit:
                 ax.set_ylim(ylimit)
@@ -170,14 +172,15 @@ def plot_dos(
             )
 
             # O-p
-            ax.plot(x3, y3_up, label=r"O-p $\uparrow$", color="green")
-            ax.plot(
-                x3,
-                y3_dn,
-                label=r"O-p $\downarrow$",
-                color="green",
-                linestyle="dotted",
-            )
+            if oxygen:
+                ax.plot(x3, y3_up, label=r"O-p $\uparrow$", color="green")
+                ax.plot(
+                    x3,
+                    y3_dn,
+                    label=r"O-p $\downarrow$",
+                    color="green",
+                    linestyle="dotted",
+                )
 
             if ylimit:
                 ax.set_ylim(ylimit)
@@ -333,7 +336,8 @@ def plot_dos(
             ax.plot(x3, y3, label=species[1] + "-d$_{xz}$", color="lightblue")
             ax.plot(x4, y4, label=species[1] + "-d$_{z^2}$", color="red")
             ax.plot(x5, y5, label=species[1] + "-d$_{x^2-t^2}$", color="maroon")
-            ax.plot(x6, y6, label="O-p", color="green")
+            if oxygen:
+                ax.plot(x6, y6, label="O-p", color="green")
 
             if ylimit:
                 ax.set_ylim(ylimit)
@@ -399,14 +403,15 @@ def plot_dos(
             )
 
             # O-p
-            ax.plot(x6, y6_up, label=r"O-p $\uparrow$", color="green")
-            ax.plot(
-                x6,
-                y6_dn,
-                label=r"O-p $\downarrow$",
-                color="green",
-                linestyle="dotted",
-            )
+            if oxygen:
+                ax.plot(x6, y6_up, label=r"O-p $\uparrow$", color="green")
+                ax.plot(
+                    x6,
+                    y6_dn,
+                    label=r"O-p $\downarrow$",
+                    color="green",
+                    linestyle="dotted",
+                )
 
             if ylimit:
                 ax.set_ylim(ylimit)
@@ -461,6 +466,12 @@ if __name__ == "__main__":
         help="Plot degenerate eg and t2g orbitals. Otherwise, each d orbital is plot separately.",
     )
     parser.add_argument(
+        "-o",
+        "--oxygen",
+        action="store_true",
+        help="Plot oxygen contribution to DOS.",
+    )
+    parser.add_argument(
         "-a",
         "--atoms",
         type=int,
@@ -475,4 +486,5 @@ if __name__ == "__main__":
         ylimit=args.ylimit,
         atoms=args.atoms,
         degenerate=args.degenerate,
+        oxygen=args.oxygen
     )
