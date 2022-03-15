@@ -445,7 +445,7 @@ def plot_dos(
                 ax.plot(
                     x1,
                     (y1_dn + y2_dn + y3_dn + y4_dn + y5_dn),
-                    label=species[1] + r"Total DOS $\downarrow$",
+                    label=r"Total DOS $\downarrow$",
                     color="k",
                     linestyle="dotted",
                 )
