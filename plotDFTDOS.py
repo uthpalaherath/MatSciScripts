@@ -438,13 +438,13 @@ def plot_dos(
             if total:
                 ax.plot(
                     x1,
-                    (y1_up, y2_up, y3_up, y4_up, y5_up),
+                    (y1_up + y2_up + y3_up + y4_up + y5_up),
                     label=r"Total DOS $\uparrow$",
                     color="k",
                 )
                 ax.plot(
                     x1,
-                    (y1_dn, y2_dn, y3_dn, y4_dn, y5_dn),
+                    (y1_dn + y2_dn + y3_dn + y4_dn + y5_dn),
                     label=species[1] + r"Total DOS $\downarrow$",
                     color="k",
                     linestyle="dotted",
