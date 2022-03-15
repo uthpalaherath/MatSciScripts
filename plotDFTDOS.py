@@ -31,7 +31,8 @@ def plot_dos(
     ylimit=None,
     atoms=None,
     degenerate=False,
-    oxygen=False
+    oxygen=False,
+    total=False,
 ):
     """This method plots dos"""
 
@@ -143,6 +144,9 @@ def plot_dos(
             if oxygen:
                 ax.plot(x3, y3, label="O-p", color="green")
 
+            if total:
+                ax.plot(x1, (y1 + y2), label="Total DOS", color="k")
+
             if ylimit:
                 ax.set_ylim(ylimit)
             else:
@@ -179,6 +183,16 @@ def plot_dos(
                     y3_dn,
                     label=r"O-p $\downarrow$",
                     color="green",
+                    linestyle="dotted",
+                )
+
+            if total:
+                ax.plot(x1, (y1_up + y2_up), label=r"Total DOS $\uparrow$", color="k")
+                ax.plot(
+                    x1,
+                    (y1_dn + y2_dn),
+                    label=r"Total DOS $\downarrow$",
+                    color="k",
                     linestyle="dotted",
                 )
 
@@ -339,6 +353,14 @@ def plot_dos(
             if oxygen:
                 ax.plot(x6, y6, label="O-p", color="green")
 
+            if total:
+                ax.plot(
+                    x1,
+                    (y1 + y2 + y3 + y4 + y5),
+                    label="Total DOS",
+                    color="k",
+                )
+
             if ylimit:
                 ax.set_ylim(ylimit)
             else:
@@ -413,6 +435,21 @@ def plot_dos(
                     linestyle="dotted",
                 )
 
+            if total:
+                ax.plot(
+                    x1,
+                    (y1_up, y2_up, y3_up, y4_up, y5_up),
+                    label=r"Total DOS $\uparrow$",
+                    color="k",
+                )
+                ax.plot(
+                    x1,
+                    (y1_dn, y2_dn, y3_dn, y4_dn, y5_dn),
+                    label=species[1] + r"Total DOS $\downarrow$",
+                    color="k",
+                    linestyle="dotted",
+                )
+
             if ylimit:
                 ax.set_ylim(ylimit)
             else:
@@ -472,6 +509,12 @@ if __name__ == "__main__":
         help="Plot oxygen contribution to DOS.",
     )
     parser.add_argument(
+        "-t",
+        "--total",
+        action="store_true",
+        help="Plot Total DOS contribution from B atoms.",
+    )
+    parser.add_argument(
         "-a",
         "--atoms",
         type=int,
@@ -486,5 +529,6 @@ if __name__ == "__main__":
         ylimit=args.ylimit,
         atoms=args.atoms,
         degenerate=args.degenerate,
-        oxygen=args.oxygen
+        oxygen=args.oxygen,
+        total=args.total,
     )
