@@ -349,7 +349,7 @@ def plot_dos(
             ax.plot(x2, y2, label=species[1] + "-d$_{yz}$", color="cyan")
             ax.plot(x3, y3, label=species[1] + "-d$_{xz}$", color="lightblue")
             ax.plot(x4, y4, label=species[1] + "-d$_{z^2}$", color="red")
-            ax.plot(x5, y5, label=species[1] + "-d$_{x^2-t^2}$", color="maroon")
+            ax.plot(x5, y5, label=species[1] + "-d$_{x^2-y^2}$", color="maroon")
             if oxygen:
                 ax.plot(x6, y6, label="O-p", color="green")
 
