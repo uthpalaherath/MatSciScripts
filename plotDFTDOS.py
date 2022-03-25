@@ -33,6 +33,7 @@ def plot_dos(
     degenerate=False,
     oxygen=False,
     total=False,
+    b_index=2,
 ):
     """This method plots dos"""
 
@@ -55,10 +56,9 @@ def plot_dos(
     species_count = data[6].split()
     species_count = [int(i) for i in species_count]
 
+    atoms_d = [*np.arange(sum(species_count[:b_index - 1]), sum(species_count[:b_index - 1])+species_count[b_index-1])]
     if atoms:
-        atoms_d = [i + species_count[0] - 1 for i in atoms]
-    else:
-        atoms_d = [*np.arange(species_count[0], species_count[0] + species_count[1])]
+        atoms_d = [atoms_d[i - 1] for i in atoms]
 
     # Degenerate case
     if degenerate:
@@ -113,12 +113,7 @@ def plot_dos(
             filename="vasprun.xml",
             mode="parametric_line",
             orbitals=[1, 2, 3],
-            atoms=[
-                *np.arange(
-                    species_count[0] + species_count[1],
-                    species_count[0] + species_count[1] + species_count[2],
-                )
-            ],
+            atoms = [*np.arange(sum(species_count[:b_index]), sum(species_count[:b_index ])+species_count[b_index])],
             plot_total=False,
             plt_show=False,
         )
@@ -139,8 +134,8 @@ def plot_dos(
         fig.tight_layout()
 
         if not sp:
-            ax.plot(x1, y1, label=species[1] + "-d$_{t2g}$", color="blue")
-            ax.plot(x2, y2, label=species[1] + "-d$_{eg}$", color="red")
+            ax.plot(x1, y1, label=species[b_index-1] + "-d$_{t2g}$", color="blue")
+            ax.plot(x2, y2, label=species[b_index-1] + "-d$_{eg}$", color="red")
             if oxygen:
                 ax.plot(x3, y3, label="O-p", color="green")
 
@@ -156,21 +151,21 @@ def plot_dos(
 
         else:
             # t2g
-            ax.plot(x1, y1_up, label=species[1] + r"-d$_{t2g} \uparrow$", color="blue")
+            ax.plot(x1, y1_up, label=species[b_index-1] + r"-d$_{t2g} \uparrow$", color="blue")
             ax.plot(
                 x1,
                 y1_dn,
-                label=species[1] + r"-d$_{t2g} \downarrow$",
+                label=species[b_index-1] + r"-d$_{t2g} \downarrow$",
                 color="blue",
                 linestyle="dotted",
             )
 
             # eg
-            ax.plot(x2, y2_up, label=species[1] + r"-d$_{eg} \uparrow$", color="red")
+            ax.plot(x2, y2_up, label=species[b_index-1] + r"-d$_{eg} \uparrow$", color="red")
             ax.plot(
                 x2,
                 y2_dn,
-                label=species[1] + r"-d$_{eg} \downarrow$",
+                label=species[b_index-1] + r"-d$_{eg} \downarrow$",
                 color="red",
                 linestyle="dotted",
             )
@@ -319,12 +314,7 @@ def plot_dos(
             filename="vasprun.xml",
             mode="parametric_line",
             orbitals=[1, 2, 3],
-            atoms=[
-                *np.arange(
-                    species_count[0] + species_count[1],
-                    species_count[0] + species_count[1] + species_count[2],
-                )
-            ],
+            atoms = [*np.arange(sum(species_count[:b_index]), sum(species_count[:b_index ])+species_count[b_index])],
             plot_total=False,
             plt_show=False,
         )
@@ -345,11 +335,11 @@ def plot_dos(
         fig.tight_layout()
 
         if not sp:
-            ax.plot(x1, y1, label=species[1] + "-d$_{xy}$", color="blue")
-            ax.plot(x2, y2, label=species[1] + "-d$_{yz}$", color="cyan")
-            ax.plot(x3, y3, label=species[1] + "-d$_{xz}$", color="lightblue")
-            ax.plot(x4, y4, label=species[1] + "-d$_{z^2}$", color="red")
-            ax.plot(x5, y5, label=species[1] + "-d$_{x^2-t^2}$", color="maroon")
+            ax.plot(x1, y1, label=species[b_index-1] + "-d$_{xy}$", color="blue")
+            ax.plot(x2, y2, label=species[b_index-1] + "-d$_{yz}$", color="cyan")
+            ax.plot(x3, y3, label=species[b_index-1] + "-d$_{xz}$", color="lightblue")
+            ax.plot(x4, y4, label=species[b_index-1] + "-d$_{z^2}$", color="red")
+            ax.plot(x5, y5, label=species[b_index-1] + "-d$_{x^2-t^2}$", color="maroon")
             if oxygen:
                 ax.plot(x6, y6, label="O-p", color="green")
 
@@ -371,55 +361,55 @@ def plot_dos(
 
         else:
             # d-xy
-            ax.plot(x1, y1_up, label=species[1] + r"-d$_{xy} \uparrow$", color="blue")
+            ax.plot(x1, y1_up, label=species[b_index-1] + r"-d$_{xy} \uparrow$", color="blue")
             ax.plot(
                 x1,
                 y1_dn,
-                label=species[1] + r"-d$_{xy} \downarrow$",
+                label=species[b_index-1] + r"-d$_{xy} \downarrow$",
                 color="blue",
                 linestyle="dotted",
             )
 
             # d-yz
-            ax.plot(x2, y2_up, label=species[1] + r"-d$_{yz} \uparrow$", color="cyan")
+            ax.plot(x2, y2_up, label=species[b_index-1] + r"-d$_{yz} \uparrow$", color="cyan")
             ax.plot(
                 x2,
                 y2_dn,
-                label=species[1] + r"-d$_{yz} \downarrow$",
+                label=species[b_index-1] + r"-d$_{yz} \downarrow$",
                 color="cyan",
                 linestyle="dotted",
             )
 
             # d-xz
             ax.plot(
-                x3, y3_up, label=species[1] + r"-d$_{xz} \uparrow$", color="lightblue"
+                x3, y3_up, label=species[b_index-1] + r"-d$_{xz} \uparrow$", color="lightblue"
             )
             ax.plot(
                 x3,
                 y3_dn,
-                label=species[1] + r"-d$_{xz} \downarrow$",
+                label=species[b_index-1] + r"-d$_{xz} \downarrow$",
                 color="lightblue",
                 linestyle="dotted",
             )
 
             # d-z2
-            ax.plot(x4, y4_up, label=species[1] + r"-d$_{z^2} \uparrow$", color="red")
+            ax.plot(x4, y4_up, label=species[b_index-1] + r"-d$_{z^2} \uparrow$", color="red")
             ax.plot(
                 x4,
                 y4_dn,
-                label=species[1] + r"-d$_{z^2} \downarrow$",
+                label=species[b_index-1] + r"-d$_{z^2} \downarrow$",
                 color="red",
                 linestyle="dotted",
             )
 
             # d-x2-y2
             ax.plot(
-                x5, y5_up, label=species[1] + r"-d$_{x^2-y^2} \uparrow$", color="maroon"
+                x5, y5_up, label=species[b_index-1] + r"-d$_{x^2-y^2} \uparrow$", color="maroon"
             )
             ax.plot(
                 x5,
                 y5_dn,
-                label=species[1] + r"-d$_{x^2-y^2} \downarrow$",
+                label=species[b_index-1] + r"-d$_{x^2-y^2} \downarrow$",
                 color="maroon",
                 linestyle="dotted",
             )
@@ -497,6 +487,9 @@ if __name__ == "__main__":
         "-ylim", "--ylimit", type=float, nargs=2, help="DOS axis range", default=None
     )
     parser.add_argument(
+        "-b", "--b_index", type=int, help="The index of the B species in POSCAR. Default is 2 assuming ABO3 structure.", default=2
+    )
+    parser.add_argument(
         "-d",
         "--degenerate",
         action="store_true",
@@ -531,4 +524,5 @@ if __name__ == "__main__":
         degenerate=args.degenerate,
         oxygen=args.oxygen,
         total=args.total,
+        b_index = args.b_index
     )
