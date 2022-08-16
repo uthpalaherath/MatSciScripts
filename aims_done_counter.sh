@@ -10,6 +10,10 @@
 # - Uthpala Herath
 
 # Checks for aims.out in all directories here.
+complete_counter=0
+incomplete_counter=0
+notstarted_counter=0
+
 for i in */
 do
     if [ -f "$i/aims.out" ]
@@ -19,11 +23,19 @@ do
         if [ "$done_word" == 'Have' ]
         then
             echo ${i:0:-1} ": Complete"
+            complete_counter=$(( complete_counter + 1 ))
         else
             echo ${i:0:-1} ": Incomplete"
+            incomplete_counter=$(( incomplete_counter + 1 ))
         fi
     else
         echo ${i:0:-1} ": Calculation not started"
+        notstarted_counter=$(( notstarted_counter + 1 ))
     fi
 done
+
+echo "--------------------------"
+echo "Complete : " $complete_counter
+echo "Incomplete : " $incomplete_counter
+echo "Not started : " $notstarted_counter
 
