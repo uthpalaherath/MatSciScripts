@@ -12,6 +12,7 @@
 # Checks for aims.out in all directories here.
 complete_counter=0
 incomplete_counter=0
+fail_counter=0
 notstarted_counter=0
 
 for i in */
@@ -25,8 +26,13 @@ do
             echo ${i:0:-1} ": Complete"
             complete_counter=$(( complete_counter + 1 ))
         else
-            echo ${i:0:-1} ": Incomplete"
-            incomplete_counter=$(( incomplete_counter + 1 ))
+            if [ -s "$i/aims.err" ] || [ -s "$i/aims.error" ]; then
+                echo ${i:0:-1} ": Fail"
+                fail_counter=$(( fail_counter + 1 ))
+            else
+                echo ${i:0:-1} ": Incomplete"
+                incomplete_counter=$(( incomplete_counter + 1 ))
+            fi
         fi
     else
         echo ${i:0:-1} ": Calculation not started"
@@ -37,5 +43,5 @@ done
 echo "--------------------------"
 echo "Complete : " $complete_counter
 echo "Incomplete : " $incomplete_counter
+echo "Fail : " $fail_counter
 echo "Not started : " $notstarted_counter
-
