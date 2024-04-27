@@ -625,4 +625,4 @@ def on_q_exit(event):
 
 plt.connect("key_press_event", on_q_exit)
 plt.savefig("aimsplot.png")
-plt.show()
+#plt.show()
