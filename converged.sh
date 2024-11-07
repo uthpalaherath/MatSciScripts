@@ -5,14 +5,14 @@ VASP convergence checker.
 Author: Uthpala Herath
 
 This tiny script uses pymatgen (github.com/materialsproject/pymatgen)
-to read the vasp.xml file in a directory to check if the DFT calculation 
-has reached electronic and/or ionic convergence. 
+to read the vasp.xml file in a directory to check if the DFT calculation
+has reached electronic and/or ionic convergence.
 
 Place the script somewhere that is accessed globally.
 
-Usage: 
+Usage:
 
-$ converged
+$ converged.sh
 
 """
 
