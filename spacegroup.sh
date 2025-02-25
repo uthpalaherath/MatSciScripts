@@ -4,14 +4,14 @@ Spacegroup.
 
 Author: Uthpala Herath
 
-This tiny script uses PyChemia (github.com/MaterialsDiscovery/PyChemia) 
+This tiny script uses PyChemia (github.com/MaterialsDiscovery/PyChemia)
 to read the POSCAR file in a directory and returns its spacegroup.
 
 Place the script somewhere that is accessed globally.
 
-Usage: 
+Usage:
 
-$ spacegroup 
+$ spacegroup.sh
 
 """
 import pychemia
