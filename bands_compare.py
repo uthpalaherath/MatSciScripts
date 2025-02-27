@@ -4,7 +4,7 @@
 #  If nPlots=2, it computes RMSE and optionally plots the difference as well.
 #
 #  Usage:
-#    compare_bands.py N_PLOTS DIRECTORY TITLE ENERGY_OFFSET ...
+#    bands_compare.py N_PLOTS DIRECTORY TITLE ENERGY_OFFSET ...
 #                       [yMin yMax] --diffplot
 #
 #    * N_PLOTS:  number of band structures to plot (1 to 7).
@@ -13,7 +13,7 @@
 #    * Finally, optionally specify yMin and yMax for the plot.
 #
 #  Example:
-#    compare_bands.py 2 ./CalcA A 0.0 ./CalcB B 1.0 -8 8 --diffplot
+#    bands_compare.py 2 ./CalcA A 0.0 ./CalcB B 1.0 -8 8 --diffplot
 #
 # Author: Uthpala Herath
 # Based on the aimsplot_compare.py script in FHIaims/utilities
@@ -47,11 +47,10 @@ if len(sys.argv) > 1 and sys.argv[-1] == "--diffplot":
 if len(sys.argv) < 2:
     print(
         """Usage:
-  aimsplot_compare.py N_PLOTS DIR TITLE OFFSET ... [yMin yMax] [--diffplot]
+    bands_compare.py N_PLOTS DIR TITLE OFFSET ... [yMin yMax] [--diffplot]
 
   e.g.:
-    aimsplot_compare.py 2 CalcA A 0.0 CalcB B 1.0 -5 5
-    aimsplot_compare.py 2 CalcA A 0.0 CalcB B 1.0 -5 5 --diffplot
+    bands_compare.py 2 ./CalcA A 0.0 ./CalcB B 1.0 -8 8 --diffplot
 """
     )
     sys.exit(1)
