@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#  Script to plot and/or compare) band structures from FHI-aims.
+#  Script to plot and/or compare band structures from FHI-aims.
 #  If nPlots=2, it computes RMSE and optionally plots the difference as well.
 #
 #  Usage:
@@ -10,20 +10,20 @@
 #    * N_PLOTS:  number of band structures to plot (1 to 7).
 #    * Then for each band structure, supply:
 #         DIRECTORY TITLE ENERGY_OFFSET
-#    * Finally, optionally specify yMin and yMax for the plot.
+#    * Optionally specify yMin and yMax for the plot.
+#    * Optional flag --diffplot to plot the difference.
 #
 #  Example:
 #    bands_compare.py 2 ./CalcA A 0.0 ./CalcB B 1.0 -8 8 --diffplot
 #
-# Author: Uthpala Herath
-# Based on the aimsplot_compare.py script in FHIaims/utilities
+#  Author: Uthpala Herath
+#  Based on the aimsplot_compare.py script in FHIaims/utilities
 
 import sys
 import os
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import matplotlib.lines as mlines
 
 ##############################
@@ -329,8 +329,8 @@ if nPlots == 2:
     sum_sq = 0.0
     nvals = 0
 
-    # We'll do a naive pass over band_segments[0], spin=1 => match with #1 in second structure
-    # ignoring spin=2.  Adjust if you prefer spin=2 or something else.
+    # Do a naive pass over band_segments[0], spin=1 => match with #1 in second structure
+    # ignoring spin=2
     for seg_index, segdata in enumerate(band_segments[0], start=1):
         (start, end, length, npoint, sname, ename) = segdata
         keyA = (1, seg_index)
@@ -339,6 +339,13 @@ if nPlots == 2:
             continue
         E1 = band_data[0][keyA]["energies"]
         E2 = band_data[1][keyB]["energies"]
+
+        # If SOC is used, keep only first eigenvalue
+        if PLOT_SOC[0]:
+            E1 = E1[:, ::2]  # '::2' take every 2nd column
+        if PLOT_SOC[1]:
+            E2 = E2[:, ::2]
+
         if E1.shape[0] != E2.shape[0]:
             # mismatch # k-points
             continue
