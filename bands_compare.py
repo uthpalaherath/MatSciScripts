@@ -405,6 +405,13 @@ if nPlots == 2 and DO_PLOT_DIFF:
             xdiff += gap_diff
         E1 = band_data[0][k1]["energies"]
         E2 = band_data[1][k2]["energies"]
+
+        # If SOC is used, keep only first eigenvalue
+        if PLOT_SOC[0]:
+            E1 = E1[:, ::2]  # '::2' take every 2nd column
+        if PLOT_SOC[1]:
+            E2 = E2[:, ::2]
+
         if E1.shape[0] != E2.shape[0]:
             continue
         f1 = filter_bands_by_energy_range(E1, ylim_lower, ylim_upper)
@@ -436,7 +443,7 @@ if nPlots == 2 and DO_PLOT_DIFF:
         ax_diff.set_xticks(tx)
         ax_diff.set_xticklabels(tl)
         ax_diff.set_xlim(tx[0], tx[-1])
-    ax_diff.set_title("Difference Plot (Calc2 - Calc1)")
+    ax_diff.set_title("Difference plot (band1-band2)")
     fig_diff.savefig("bands_diff.pdf")
 
 # Save main figure
