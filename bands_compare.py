@@ -301,7 +301,7 @@ if CUSTOM_YLIM:
 else:
     ax_bands.set_ylim(-20, 20)
 
-ax_bands.set_xlabel("Wave Vector")
+# ax_bands.set_xlabel("Wave Vector")
 ax_bands.set_ylabel("Energy (eV)")
 legend_main = ax_bands.legend()
 if legend_main:
