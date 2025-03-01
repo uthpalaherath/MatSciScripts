@@ -390,7 +390,7 @@ if nPlots == 2 and DO_PLOT_DIFF:
     fig_diff, ax_diff = plt.subplots(figsize=(6, 4))
     ax_diff.axhline(0, color="k", linewidth=1)
     ax_diff.set_xlabel("Wave Vector")
-    ax_diff.set_ylabel("Diff (Calc2 - Calc1) [eV]")
+    ax_diff.set_ylabel("Diff (band1 - band2) [eV]")
     gap_diff = band_totlength[0] / 30.0
     xdiff = 0.0
     prev_end = None
