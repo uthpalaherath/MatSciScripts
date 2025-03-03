@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 #  Script to plot and/or compare band structures from FHI-aims.
-#  If nPlots=2, it computes RMSE and optionally plots the difference as well.
+#  If nPlots=2, it computes RMSE and optionally plots the residual as well.
 #
 #  Usage:
 #    bands_compare.py N_PLOTS DIRECTORY TITLE ENERGY_OFFSET ...
@@ -11,7 +11,7 @@
 #    * Then for each band structure, supply:
 #         DIRECTORY TITLE ENERGY_OFFSET
 #    * Optionally specify yMin and yMax for the plot.
-#    * Optional flag --diffplot to plot the difference.
+#    * Optional flag --diffplot to plot the difference (residual).
 #
 #  Example:
 #    bands_compare.py 2 ./CalcA A 0.0 ./CalcB B 1.0 -8 8 --diffplot
@@ -100,9 +100,9 @@ if CUSTOM_YLIM:
 else:
     print(f"Using default y-range: [{ylim_lower}, {ylim_upper}]")
 
-##############################
+####################
 # 2) Data Structures
-##############################
+####################
 band_data = [dict() for _ in range(nPlots)]
 max_spin_channel = [1] * nPlots
 PLOT_SOC = [False] * nPlots
@@ -112,9 +112,9 @@ rlatvec = [[] for _ in range(nPlots)]
 band_segments = [[] for _ in range(nPlots)]
 band_totlength = [0.0 for _ in range(nPlots)]
 
-##############################
+########################
 # 3) Build the main plot
-##############################
+########################
 fig_bands, ax_bands = plt.subplots(figsize=(6, 4))
 if output_x_axis:
     ax_bands.axhline(0.0, color="k", linestyle=":")
@@ -124,9 +124,9 @@ def nice_label(lab):
     return r"$\Gamma$" if lab.lower() == "gamma" else lab
 
 
-##############################
+##########################################
 # 4) Read geometry.in, control.in for each
-##############################
+##########################################
 for i in range(nPlots):
     # read geometry
     geo_file = os.path.join(directory[i], "geometry.in")
@@ -189,9 +189,9 @@ for i in range(nPlots):
     if PLOT_SOC[i]:
         max_spin_channel[i] = 1
 
-##############################
+######################################################
 # 5) Plot each band structure; store data in band_data
-##############################
+######################################################
 line_handle_for_calc2 = None  # reference for the second structure's line
 
 for i in range(nPlots):
@@ -383,55 +383,95 @@ if nPlots == 2:
     else:
         print("No overlapping band data => no RMSE to compute.")
 
-##############################
-# 7) Optionally do a 2nd figure with difference
-##############################
+##############################################
+# 7) Optionally do a 2nd figure with residuals
+##############################################
 if nPlots == 2 and DO_PLOT_DIFF:
     fig_diff, ax_diff = plt.subplots(figsize=(6, 4))
     ax_diff.axhline(0, color="k", linewidth=1)
-    ax_diff.set_xlabel("Wave Vector")
-    ax_diff.set_ylabel("Diff (band1 - band2) [eV]")
+    #    ax_diff.set_xlabel("Wave Vector")
+    ax_diff.set_ylabel("Residual (band1 - band2) [eV]")
+
+    # colormap
+    cmap = plt.colormaps["tab10"]
+
     gap_diff = band_totlength[0] / 30.0
     xdiff = 0.0
     prev_end = None
     labels_diff = []
+
     for seg_index, segdata in enumerate(band_segments[0], start=1):
         (start, end, length, npoint, sname, ename) = segdata
-        k1 = (1, seg_index)
-        k2 = (1, seg_index)
-        if k1 not in band_data[0] or k2 not in band_data[1]:
+        keyA = (1, seg_index)
+        keyB = (1, seg_index)
+        if keyA not in band_data[0] or keyB not in band_data[1]:
             continue
+
+        # Add a small gap if segments don’t connect
         if prev_end is not None and not np.allclose(start, prev_end):
             xdiff += gap_diff
-        E1 = band_data[0][k1]["energies"]
-        E2 = band_data[1][k2]["energies"]
 
-        # If SOC is used, keep only first eigenvalue
+        E1 = band_data[0][keyA]["energies"]
+        E2 = band_data[1][keyB]["energies"]
+
+        # If SOC is used, skip every other column, etc.
         if PLOT_SOC[0]:
-            E1 = E1[:, ::2]  # '::2' take every 2nd column
+            E1 = E1[:, ::2]
         if PLOT_SOC[1]:
             E2 = E2[:, ::2]
 
         if E1.shape[0] != E2.shape[0]:
             continue
+
         f1 = filter_bands_by_energy_range(E1, ylim_lower, ylim_upper)
         f2 = filter_bands_by_energy_range(E2, ylim_lower, ylim_upper)
         if f1.size == 0 or f2.size == 0:
             continue
+
         ncommon = min(f1.shape[1], f2.shape[1])
         e1use = f1[:, :ncommon]
         e2use = f2[:, :ncommon]
-        diffmat = e2use - e1use
 
+        # difference = band1 - band2
+        diffmat = e1use - e2use
+
+        # x-values for these k‐points
+        # shape: (npoint,)
         local_x = np.linspace(0, length, f1.shape[0]) + xdiff
+
+        # Define a bar width that’s a fraction of the spacing between adjacent k‐points
+        # If there's only 1 or 2 k‐points, pick a small fallback width
+        if len(local_x) > 1:
+            dx = local_x[1] - local_x[0]
+            bar_width = 0.7 * dx
+        else:
+            bar_width = 0.05  # fallback
+
+        # For each band, draw a vertical bar at each x
         for b_ in range(ncommon):
-            ax_diff.plot(local_x, diffmat[:, b_], color="b")
+            color_frac = b_ / max(1, ncommon - 1)
+            bar_color = cmap(color_frac)
+
+            # diffmat[:, b_] is shape (npoint,)
+            # bar(...) can accept arrays for left (x) and height
+            ax_diff.bar(
+                local_x,
+                diffmat[:, b_],
+                width=bar_width,
+                color=bar_color,
+                alpha=0.4,
+                align="center",
+                edgecolor="none",
+                label=None,
+            )
 
         labels_diff.append((local_x[0], sname))
         labels_diff.append((local_x[-1], ename))
+
         prev_end = end
         xdiff = local_x[-1]
 
+    # Vertical lines and x‐labels at the boundaries
     usedx = set()
     for xx, lab in labels_diff:
         if xx not in usedx:
@@ -443,7 +483,8 @@ if nPlots == 2 and DO_PLOT_DIFF:
         ax_diff.set_xticks(tx)
         ax_diff.set_xticklabels(tl)
         ax_diff.set_xlim(tx[0], tx[-1])
-    ax_diff.set_title("Difference plot (band1-band2)")
+
+    ax_diff.set_title("Residual plot (band1 - band2)")
     fig_diff.savefig("bands_diff.pdf")
 
 # Save main figure
