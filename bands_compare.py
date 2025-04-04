@@ -180,9 +180,14 @@ for i in range(nPlots):
                 npt = int(parts[8])
                 sname = parts[9] if len(parts) > 9 else ""
                 ename = parts[10] if len(parts) > 10 else ""
+                # length = np.linalg.norm(
+                #     np.dot(rlatvec[i], end) - np.dot(rlatvec[i], start)
+                # )
+                # Fixed for correct k-path lengths
                 length = np.linalg.norm(
-                    np.dot(rlatvec[i], end) - np.dot(rlatvec[i], start)
+                    np.dot(end, rlatvec[i]) - np.dot(start, rlatvec[i])
                 )
+
                 band_segments[i].append((start, end, length, npt, sname, ename))
                 band_totlength[i] += length
 
